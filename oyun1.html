@@ -18,7 +18,7 @@
             height: 100vh;
             position: relative;
         }
-        
+
         #ui {
             position: absolute;
             top: 20px;
@@ -29,7 +29,7 @@
             padding: 15px;
             border-radius: 10px;
         }
-        
+
         .speech-bubble {
             position: absolute;
             background: white;
@@ -44,12 +44,12 @@
             transform: scale(0);
             transition: all 0.3s ease;
         }
-        
+
         .speech-bubble.show {
             opacity: 1;
             transform: scale(1);
         }
-        
+
         .speech-bubble::after {
             content: '';
             position: absolute;
@@ -60,7 +60,7 @@
             border: 15px solid transparent;
             border-top-color: white;
         }
-        
+
         #controls {
             position: absolute;
             bottom: 20px;
@@ -73,7 +73,7 @@
             color: white;
             text-align: center;
         }
-        
+
         .control-btn {
             background: #4CAF50;
             border: none;
@@ -84,11 +84,11 @@
             cursor: pointer;
             font-size: 14px;
         }
-        
+
         .control-btn:hover {
             background: #45a049;
         }
-        
+
         #mobileControls {
             position: absolute;
             bottom: 80px;
@@ -100,7 +100,7 @@
             width: 150px;
             height: 150px;
         }
-        
+
         .mobile-btn {
             background: rgba(0,0,0,0.7);
             border: 2px solid rgba(255,255,255,0.3);
@@ -113,16 +113,16 @@
             justify-content: center;
             user-select: none;
         }
-        
+
         .mobile-btn:active {
             background: rgba(255,255,255,0.3);
         }
-        
+
         .mobile-btn:nth-child(1) { grid-column: 2; grid-row: 1; } /* Yukarı */
         .mobile-btn:nth-child(2) { grid-column: 1; grid-row: 2; } /* Sol */
         .mobile-btn:nth-child(3) { grid-column: 3; grid-row: 2; } /* Sağ */
         .mobile-btn:nth-child(4) { grid-column: 2; grid-row: 3; } /* Aşağı */
-        
+
         @media (min-width: 768px) {
             #mobileControls {
                 display: none;
@@ -139,14 +139,14 @@
         </div>
 
         <div id="speechBubble" class="speech-bubble"></div>
-        
+
         <div id="controls">
             <div>Hareket: WASD veya Mobil Butonlar</div>
             <button class="control-btn" onclick="selectCharacter('male')">👦 Erkek</button>
             <button class="control-btn" onclick="selectCharacter('female')">👧 Kız</button>
             <button class="control-btn" onclick="toggleSound(event)">🔊 Ses</button>
         </div>
-        
+
         <div id="mobileControls">
             <div class="mobile-btn" onmousedown="move('up')" ontouchstart="move('up')">⬆</div>
             <div class="mobile-btn" onmousedown="move('left')" ontouchstart="move('left')">⬅</div>
@@ -166,7 +166,7 @@
         let score = 0;
         let soundEnabled = true;
         let audioContext;
-        
+
         // Ses sistemi
         function initAudio() {
             try {
@@ -175,32 +175,32 @@
                 console.log('Ses desteklenmiyor');
             }
         }
-        
+
         function playSound(freq, duration) {
             if (!audioContext || !soundEnabled) return;
-            
+
             const osc = audioContext.createOscillator();
             const gain = audioContext.createGain();
-            
+
             osc.connect(gain);
             gain.connect(audioContext.destination);
-            
+
             osc.frequency.value = freq;
             gain.gain.setValueAtTime(0.1, audioContext.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-            
+
             osc.start();
             osc.stop(audioContext.currentTime + duration);
         }
-        
+
         // Oyun başlatma
         function init() {
             console.log('Oyun başlatılıyor...');
-            
+
             // Sahne
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x87CEEB);
-            
+
             // Kamera
             camera = new THREE.OrthographicCamera(
                 window.innerWidth / -50,
@@ -211,33 +211,33 @@
             );
             camera.position.set(10, 10, 10);
             camera.lookAt(0, 0, 0);
-            
+
             // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.shadowMap.enabled = true;
             document.getElementById('gameContainer').appendChild(renderer.domElement);
-            
+
             // Işık
             const light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(10, 10, 5);
             light.castShadow = true;
             scene.add(light);
-            
+
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
             scene.add(ambientLight);
-            
+
             createWorld();
             setupControls();
             initAudio();
             animate();
-            
+
             // Hoşgeldin mesajı
             showMessage("Merhaba! Oyunumuza hoşgeldiniz! 👋<br>Önce bir karakter seçin!");
-            
+
             console.log('Oyun başarıyla yüklendi!');
         }
-        
+
         function createWorld() {
             // Zemin
             const groundGeometry = new THREE.PlaneGeometry(50, 50);
@@ -246,23 +246,23 @@
             ground.rotation.x = -Math.PI / 2;
             ground.receiveShadow = true;
             scene.add(ground);
-            
+
             // Ev
             createHouse();
-            
+
             // Okul
             createSchool();
-            
+
             // Öğretmen
             createTeacher();
-            
+
             // Ağaçlar
             createTrees();
         }
-        
+
         function createHouse() {
             const houseGroup = new THREE.Group();
-            
+
             // Ana yapı
             const houseBody = new THREE.Mesh(
                 new THREE.BoxGeometry(4, 3, 4),
@@ -271,7 +271,7 @@
             houseBody.position.y = 1.5;
             houseBody.castShadow = true;
             houseGroup.add(houseBody);
-            
+
             // Çatı
             const roof = new THREE.Mesh(
                 new THREE.ConeGeometry(3, 1.5, 4),
@@ -281,7 +281,7 @@
             roof.rotation.y = Math.PI / 4;
             roof.castShadow = true;
             houseGroup.add(roof);
-            
+
             // Kapı
             const door = new THREE.Mesh(
                 new THREE.BoxGeometry(0.8, 2, 0.1),
@@ -289,15 +289,15 @@
             );
             door.position.set(0, 1, 2.05);
             houseGroup.add(door);
-            
+
             houseGroup.position.set(-15, 0, -10);
             scene.add(houseGroup);
             house = houseGroup;
         }
-        
+
         function createSchool() {
             const schoolGroup = new THREE.Group();
-            
+
             // Ana bina
             const schoolBody = new THREE.Mesh(
                 new THREE.BoxGeometry(8, 4, 6),
@@ -306,7 +306,7 @@
             schoolBody.position.y = 2;
             schoolBody.castShadow = true;
             schoolGroup.add(schoolBody);
-            
+
             // Çatı
             const roof = new THREE.Mesh(
                 new THREE.BoxGeometry(9, 0.5, 7),
@@ -315,15 +315,15 @@
             roof.position.y = 4.25;
             roof.castShadow = true;
             schoolGroup.add(roof);
-            
+
             schoolGroup.position.set(15, 0, 10);
             scene.add(schoolGroup);
             school = schoolGroup;
         }
-        
+
         function createTeacher() {
             const teacherGroup = new THREE.Group();
-            
+
             // Vücut
             const body = new THREE.Mesh(
                 new THREE.CylinderGeometry(0.3, 0.4, 1.2),
@@ -332,7 +332,7 @@
             body.position.y = 0.6;
             body.castShadow = true;
             teacherGroup.add(body);
-            
+
             // Kafa
             const head = new THREE.Mesh(
                 new THREE.SphereGeometry(0.25),
@@ -341,16 +341,16 @@
             head.position.y = 1.45;
             head.castShadow = true;
             teacherGroup.add(head);
-            
+
             teacherGroup.position.set(12, 0.5, 8);
             scene.add(teacherGroup);
             teacher = teacherGroup;
         }
-        
+
         function createTrees() {
             for (let i = 0; i < 8; i++) {
                 const treeGroup = new THREE.Group();
-                
+
                 // Gövde
                 const trunk = new THREE.Mesh(
                     new THREE.CylinderGeometry(0.2, 0.3, 2),
@@ -359,7 +359,7 @@
                 trunk.position.y = 1;
                 trunk.castShadow = true;
                 treeGroup.add(trunk);
-                
+
                 // Yaprak
                 const leaves = new THREE.Mesh(
                     new THREE.SphereGeometry(1),
@@ -368,7 +368,7 @@
                 leaves.position.y = 2.5;
                 leaves.castShadow = true;
                 treeGroup.add(leaves);
-                
+
                 const angle = (i / 8) * Math.PI * 2;
                 const radius = 20;
                 treeGroup.position.set(
@@ -376,26 +376,26 @@
                     0,
                     Math.sin(angle) * radius
                 );
-                
+
                 scene.add(treeGroup);
             }
         }
-        
+
         function createPlayer(gender) {
             if (player) {
                 scene.remove(player);
             }
-            
+
             const playerGroup = new THREE.Group();
-            
+
             // Renk seçimi
             const colors = {
                 male: { shirt: 0x4169E1, shorts: 0x8B4513, hat: 0xFF6B6B },
                 female: { shirt: 0xFF69B4, shorts: 0x9932CC, hat: 0xFFD700 }
             };
-            
+
             const colorScheme = colors[gender];
-            
+
             // Vücut
             const body = new THREE.Mesh(
                 new THREE.CylinderGeometry(0.3, 0.4, 1.2),
@@ -404,7 +404,7 @@
             body.position.y = 0.6;
             body.castShadow = true;
             playerGroup.add(body);
-            
+
             // Kafa
             const head = new THREE.Mesh(
                 new THREE.SphereGeometry(0.25),
@@ -413,7 +413,7 @@
             head.position.y = 1.45;
             head.castShadow = true;
             playerGroup.add(head);
-            
+
             // Şapka
             const hat = new THREE.Mesh(
                 new THREE.CylinderGeometry(0.28, 0.28, 0.12),
@@ -422,7 +422,7 @@
             hat.position.y = 1.65;
             hat.castShadow = true;
             playerGroup.add(hat);
-            
+
             // Şort
             const shorts = new THREE.Mesh(
                 new THREE.CylinderGeometry(0.35, 0.35, 0.6),
@@ -431,7 +431,7 @@
             shorts.position.y = -0.1;
             shorts.castShadow = true;
             playerGroup.add(shorts);
-            
+
             // Çanta
             const backpack = new THREE.Mesh(
                 new THREE.BoxGeometry(0.4, 0.5, 0.2),
@@ -440,142 +440,125 @@
             backpack.position.set(0, 0.8, -0.3);
             backpack.castShadow = true;
             playerGroup.add(backpack);
-            
+
             playerGroup.position.set(0, 0.5, 0);
             scene.add(playerGroup);
             player = playerGroup;
-            
+
             return playerGroup;
         }
-        
+
         // Kontroller
         function setupControls() {
             document.addEventListener('keydown', (event) => {
                 if (!player) return;
-                
-                const moveDistance = 0.5;
-                let moved = false;
-                
+
                 switch(event.key.toLowerCase()) {
                     case 'w':
                     case 'arrowup':
-                        playerPos.z += moveDistance;
-                        moved = true;
+                        move('up');
                         break;
                     case 's':
                     case 'arrowdown':
-                        playerPos.z -= moveDistance;
-                        moved = true;
+                        move('down');
                         break;
                     case 'a':
                     case 'arrowleft':
-                        playerPos.x -= moveDistance;
-                        moved = true;
+                        move('left');
                         break;
                     case 'd':
                     case 'arrowright':
-                        playerPos.x += moveDistance;
-                        moved = true;
+                        move('right');
                         break;
                     case 'e':
                         checkInteractions();
                         break;
                 }
-                
-                if (moved) {
-                    // Sınır kontrolü
-                    playerPos.x = Math.max(-20, Math.min(20, playerPos.x));
-                    playerPos.z = Math.max(-20, Math.min(20, playerPos.z));
-                    
-                    player.position.x = playerPos.x;
-                    player.position.z = playerPos.z;
-                    
-                    // Kamera takibi
-                    camera.position.x = playerPos.x + 10;
-                    camera.position.z = playerPos.z + 10;
-                    camera.lookAt(playerPos.x, 0, playerPos.z);
-                    
-                    playSound(300, 0.1);
-                    checkQuests();
-                }
             });
         }
-        
+
         // Mobil kontroller
         function move(direction) {
             if (!player) return;
-            
+
             const moveDistance = 0.5;
-            
+            let moved = false;
+
             switch(direction) {
                 case 'up':
                     playerPos.z += moveDistance;
+                    moved = true;
                     break;
                 case 'down':
                     playerPos.z -= moveDistance;
+                    moved = true;
                     break;
                 case 'left':
                     playerPos.x -= moveDistance;
+                    moved = true;
                     break;
                 case 'right':
                     playerPos.x += moveDistance;
+                    moved = true;
                     break;
             }
-            
-            // Sınır kontrolü
-            playerPos.x = Math.max(-20, Math.min(20, playerPos.x));
-            playerPos.z = Math.max(-20, Math.min(20, playerPos.z));
-            
-            player.position.x = playerPos.x;
-            player.position.z = playerPos.z;
-            
-            // Kamera takibi
-            camera.position.x = playerPos.x + 10;
-            camera.position.z = playerPos.z + 10;
-            camera.lookAt(playerPos.x, 0, playerPos.z);
-            
-            playSound(300, 0.1);
-            checkQuests();
+
+            if (moved) {
+                // Sınır kontrolü
+                playerPos.x = Math.max(-20, Math.min(20, playerPos.x));
+                playerPos.z = Math.max(-20, Math.min(20, playerPos.z));
+
+                player.position.x = playerPos.x;
+                player.position.z = playerPos.z;
+
+                // Kamera takibi
+                camera.position.x = playerPos.x + 10;
+                camera.position.z = playerPos.z + 10;
+                camera.lookAt(playerPos.x, 0, playerPos.z);
+
+                playSound(300, 0.1);
+                checkQuests();
+            }
         }
-        
+
         // Karakter seçimi
         function selectCharacter(gender) {
             selectedCharacter = gender;
             createPlayer(gender);
-            
+
             const name = gender === 'male' ? 'Ahmet' : 'Ayşe';
             document.getElementById('characterName').textContent = name;
-            
+
             showMessage(`Karakter seçildi: ${name}`);
             playSound(400, 0.2);
         }
-        
+
         // Görev kontrolü
         function checkQuests() {
             if (!selectedCharacter) return;
-            
+
             // Örnek görev: Ev yakınında olunca mesaj göster
             const distToHouse = distance(player.position, house.position);
             if (distToHouse < 5) {
                 showMessage("Bu senin evin! Burada dinlenebilirsin.");
             }
-            
+
             // Okula yaklaşınca
             const distToSchool = distance(player.position, school.position);
             if (distToSchool < 7) {
                 showMessage("Okula geldin. Derslerin başlamak üzere!");
             }
-            
+
             // Öğretmene yaklaşınca
             const distToTeacher = distance(player.position, teacher.position);
             if (distToTeacher < 3) {
                 showMessage("Öğretmenle konuşmak için 'E' tuşuna bas.");
             }
         }
-        
+
         function checkInteractions() {
             if (!selectedCharacter) return;
-            
+
             const distToTeacher = distance(player.position, teacher.position);
             if (distToTeacher < 3) {
                 showMessage("Öğretmen: Başarıya giden yol çalışmaktan geçer! 📚");
@@ -584,20 +567,20 @@
                 document.getElementById('score').textContent = score;
             }
         }
-        
+
         // Mesaj gösterme
         let messageTimeout;
         function showMessage(text) {
             const bubble = document.getElementById('speechBubble');
             bubble.innerHTML = text;
             bubble.classList.add('show');
-            
+
             clearTimeout(messageTimeout);
             messageTimeout = setTimeout(() => {
                 bubble.classList.remove('show');
             }, 5000);
         }
-        
+
         // Ses açma/kapama
         function toggleSound(event) {
             soundEnabled = !soundEnabled;
@@ -605,24 +588,24 @@
             btn.textContent = soundEnabled ? '🔊 Ses' : '🔇 Ses';
             playSound(400, 0.2);
         }
-        
+
         // Yardımcı: İki vektör arası mesafe
         function distance(pos1, pos2) {
             const dx = pos1.x - pos2.x;
             const dz = pos1.z - pos2.z;
             return Math.sqrt(dx*dx + dz*dz);
         }
-        
+
         // Animasyon döngüsü
         function animate() {
             requestAnimationFrame(animate);
             renderer.render(scene, camera);
         }
-        
+
         window.addEventListener('load', () => {
             init();
         });
-        
+
         // Ekran yeniden boyutlandırıldığında renderer güncelle
         window.addEventListener('resize', () => {
             if (!renderer || !camera) return;
