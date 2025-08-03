@@ -4,189 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Öğrenci Yolculuğu - Gelişmiş Sürüm</title>
+    <title>Öğrenci Yolculuğu</title>
     <style>
-        * {
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
         }
 
 ```
-    body {
-        font-family: 'Arial', sans-serif;
-        overflow: hidden;
-        background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
-    }
-
     #gameContainer {
         width: 100vw;
         height: 100vh;
         position: relative;
     }
-
-    /* Karakter Seçim Ekranı */
-    #characterSelection {
+    
+    #ui {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        color: white;
-    }
-
-    .character-panel {
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 40px;
-        text-align: center;
-        max-width: 600px;
-    }
-
-    .character-options {
-        display: flex;
-        gap: 30px;
-        margin: 30px 0;
-        justify-content: center;
-    }
-
-    .character-option {
-        background: rgba(255,255,255,0.2);
-        border: 3px solid transparent;
-        border-radius: 15px;
-        padding: 20px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        min-width: 150px;
-    }
-
-    .character-option:hover {
-        background: rgba(255,255,255,0.3);
-        border-color: #FFD700;
-        transform: scale(1.05);
-    }
-
-    .character-option.selected {
-        border-color: #FF6B6B;
-        background: rgba(255,107,107,0.3);
-    }
-
-    .character-avatar {
-        width: 80px;
-        height: 80px;
-        background: #FFD700;
-        border-radius: 50%;
-        margin: 0 auto 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 40px;
-    }
-
-    .start-btn {
-        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-        border: none;
-        color: white;
-        padding: 15px 30px;
-        font-size: 18px;
-        border-radius: 25px;
-        cursor: pointer;
-        transition: transform 0.3s ease;
-    }
-
-    .start-btn:hover {
-        transform: scale(1.1);
-    }
-
-    /* UI Panelleri */
-    .ui-panel {
-        position: absolute;
-        background: rgba(0,0,0,0.8);
-        color: white;
-        border-radius: 10px;
-        padding: 15px;
-        z-index: 100;
-    }
-
-    #topUI {
         top: 20px;
         left: 20px;
-        display: flex;
-        gap: 20px;
-        align-items: center;
-    }
-
-    .score-display {
-        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-        padding: 10px 15px;
-        border-radius: 20px;
-        font-weight: bold;
-    }
-
-    #questPanel {
-        top: 20px;
-        right: 20px;
-        max-width: 300px;
-    }
-
-    .quest-item {
-        background: rgba(255,255,255,0.1);
-        margin: 5px 0;
-        padding: 10px;
-        border-radius: 5px;
-        border-left: 4px solid #4ECDC4;
-    }
-
-    .quest-item.completed {
-        border-left-color: #2ECC71;
-        opacity: 0.7;
-    }
-
-    /* Mobil Kontroller */
-    #mobileControls {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr;
-        gap: 10px;
-        width: 200px;
-        height: 200px;
-    }
-
-    .control-btn {
-        background: rgba(0,0,0,0.7);
-        border: 2px solid rgba(255,255,255,0.3);
-        border-radius: 50%;
+        z-index: 100;
         color: white;
-        font-size: 20px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-        user-select: none;
+        background: rgba(0,0,0,0.7);
+        padding: 15px;
+        border-radius: 10px;
     }
-
-    .control-btn:active {
-        background: rgba(255,255,255,0.3);
-        transform: scale(0.95);
-    }
-
-    .control-btn:nth-child(2) { grid-column: 2; grid-row: 1; } /* Yukarı */
-    .control-btn:nth-child(3) { grid-column: 1; grid-row: 2; } /* Sol */
-    .control-btn:nth-child(4) { grid-column: 3; grid-row: 2; } /* Sağ */
-    .control-btn:nth-child(5) { grid-column: 2; grid-row: 3; } /* Aşağı */
-
-    /* Konuşma Sistemi */
+    
     .speech-bubble {
         position: absolute;
         background: white;
@@ -195,14 +40,18 @@
         padding: 15px 20px;
         font-size: 16px;
         color: #333;
-        max-width: 350px;
+        max-width: 300px;
         z-index: 200;
         opacity: 0;
         transform: scale(0);
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
-
+    
+    .speech-bubble.show {
+        opacity: 1;
+        transform: scale(1);
+    }
+    
     .speech-bubble::after {
         content: '';
         position: absolute;
@@ -213,163 +62,70 @@
         border: 15px solid transparent;
         border-top-color: white;
     }
-
-    .speech-bubble.show {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    .speech-options {
-        margin-top: 10px;
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .speech-option {
-        background: #4ECDC4;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 15px;
-        cursor: pointer;
-        font-size: 12px;
-        transition: background 0.3s ease;
-    }
-
-    .speech-option:hover {
-        background: #45B7B8;
-    }
-
-    /* Mini Oyun Paneli */
-    #miniGamePanel {
+    
+    #controls {
         position: absolute;
-        top: 50%;
+        bottom: 20px;
         left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(255,255,255,0.95);
-        border-radius: 20px;
-        padding: 30px;
-        text-align: center;
-        display: none;
-        z-index: 300;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-
-    .mini-game-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 60px);
-        gap: 10px;
-        margin: 20px auto;
-        justify-content: center;
-    }
-
-    .mini-game-cell {
-        width: 60px;
-        height: 60px;
-        background: #E8E8E8;
-        border: 2px solid #CCC;
-        border-radius: 10px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        transition: all 0.2s ease;
-    }
-
-    .mini-game-cell:hover {
-        background: #D0D0D0;
-    }
-
-    .mini-game-cell.active {
-        background: #4ECDC4;
-        color: white;
-    }
-
-    /* Başarımlar */
-    #achievementNotification {
-        position: absolute;
-        top: 100px;
-        right: 20px;
-        background: linear-gradient(45deg, #FFD700, #FFA500);
-        color: white;
+        transform: translateX(-50%);
+        z-index: 100;
+        background: rgba(0,0,0,0.7);
         padding: 15px;
         border-radius: 10px;
-        transform: translateX(400px);
-        transition: transform 0.5s ease;
-        z-index: 250;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-
-    #achievementNotification.show {
-        transform: translateX(0);
-    }
-
-    /* Loading Screen */
-    #loadingScreen {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        z-index: 2000;
         color: white;
+        text-align: center;
     }
-
-    .loading-spinner {
-        width: 60px;
-        height: 60px;
-        border: 6px solid rgba(255,255,255,0.3);
-        border-top: 6px solid white;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 20px;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .loading-progress {
-        width: 300px;
-        height: 10px;
-        background: rgba(255,255,255,0.3);
+    
+    .control-btn {
+        background: #4CAF50;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        margin: 5px;
         border-radius: 5px;
-        overflow: hidden;
-        margin-top: 20px;
+        cursor: pointer;
+        font-size: 14px;
     }
-
-    .loading-bar {
-        height: 100%;
-        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-        width: 0%;
-        transition: width 0.3s ease;
+    
+    .control-btn:hover {
+        background: #45a049;
     }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        #mobileControls {
-            display: grid;
-        }
-        
-        .ui-panel {
-            font-size: 14px;
-            padding: 10px;
-        }
-        
-        #questPanel {
-            max-width: 250px;
-        }
+    
+    #mobileControls {
+        position: absolute;
+        bottom: 80px;
+        right: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        gap: 5px;
+        width: 150px;
+        height: 150px;
     }
-
-    @media (min-width: 769px) {
+    
+    .mobile-btn {
+        background: rgba(0,0,0,0.7);
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+    }
+    
+    .mobile-btn:active {
+        background: rgba(255,255,255,0.3);
+    }
+    
+    .mobile-btn:nth-child(1) { grid-column: 2; grid-row: 1; } /* Yukarı */
+    .mobile-btn:nth-child(2) { grid-column: 1; grid-row: 2; } /* Sol */
+    .mobile-btn:nth-child(3) { grid-column: 3; grid-row: 2; } /* Sağ */
+    .mobile-btn:nth-child(4) { grid-column: 2; grid-row: 3; } /* Aşağı */
+    
+    @media (min-width: 768px) {
         #mobileControls {
             display: none;
         }
@@ -380,144 +136,536 @@
 </head>
 <body>
     <div id="gameContainer">
-        <!-- Loading Screen -->
-        <div id="loadingScreen">
-            <div class="loading-spinner"></div>
-            <h2>Öğrenci Yolculuğu Yükleniyor...</h2>
-            <div class="loading-progress">
-                <div class="loading-bar" id="loadingBar"></div>
-            </div>
-            <p id="loadingText">Harita oluşturuluyor...</p>
+        <div id="ui">
+            <div>🎒 Öğrenci Yolculuğu</div>
+            <div>Puan: <span id="score">0</span></div>
+            <div>Karakter: <span id="characterName">Seçilmedi</span></div>
         </div>
 
 ```
-    <!-- Karakter Seçim Ekranı -->
-    <div id="characterSelection">
-        <div class="character-panel">
-            <h1>🎒 Öğrenci Yolculuğuna Hoşgeldiniz! 🎒</h1>
-            <p style="margin: 20px 0;">Karakterinizi seçin ve maceranıza başlayın!</p>
-            
-            <div class="character-options">
-                <div class="character-option" data-gender="male" data-name="Ahmet">
-                    <div class="character-avatar">👦</div>
-                    <h3>Ahmet</h3>
-                    <p>Erkek Öğrenci</p>
-                </div>
-                <div class="character-option" data-gender="female" data-name="Ayşe">
-                    <div class="character-avatar">👧</div>
-                    <h3>Ayşe</h3>
-                    <p>Kız Öğrenci</p>
-                </div>
-            </div>
-            
-            <button class="start-btn" onclick="startGame()">Maceraya Başla! 🚀</button>
-        </div>
-    </div>
-
-    <!-- Ana Oyun UI -->
-    <div id="topUI" class="ui-panel">
-        <div class="score-display">
-            <span>⭐ Puan: </span>
-            <span id="scoreValue">0</span>
-        </div>
-        <div class="score-display">
-            <span>👤 Karakter: </span>
-            <span id="characterName">-</span>
-        </div>
-        <div class="score-display">
-            <span>🏆 Seviye: </span>
-            <span id="levelValue">1</span>
-        </div>
-    </div>
-
-    <div id="questPanel" class="ui-panel">
-        <h3>📋 Görevler</h3>
-        <div id="questList"></div>
-    </div>
-
-    <!-- Mobil Kontroller -->
-    <div id="mobileControls">
-        <div class="control-btn" data-direction="up">⬆️</div>
-        <div class="control-btn" data-direction="left">⬅️</div>
-        <div class="control-btn" data-direction="right">➡️</div>
-        <div class="control-btn" data-direction="down">⬇️</div>
-    </div>
-
-    <!-- Konuşma Balonu -->
     <div id="speechBubble" class="speech-bubble"></div>
-
-    <!-- Mini Oyun Paneli -->
-    <div id="miniGamePanel">
-        <h2 id="miniGameTitle">Mini Oyun</h2>
-        <p id="miniGameInstructions">Talimatlar burada görünecek</p>
-        <div id="miniGameContent"></div>
-        <div style="margin-top: 20px;">
-            <button class="start-btn" onclick="closeMiniGame()">Kapat</button>
-        </div>
+    
+    <div id="controls">
+        <div>Hareket: WASD veya Mobil Butonlar</div>
+        <button class="control-btn" onclick="selectCharacter('male')">👦 Erkek</button>
+        <button class="control-btn" onclick="selectCharacter('female')">👧 Kız</button>
+        <button class="control-btn" onclick="toggleSound()">🔊 Ses</button>
     </div>
-
-    <!-- Başarım Bildirimi -->
-    <div id="achievementNotification">
-        <h4>🏆 Başarım Kazandınız!</h4>
-        <p id="achievementText"></p>
+    
+    <div id="mobileControls">
+        <div class="mobile-btn" onmousedown="move('up')" ontouchstart="move('up')">⬆</div>
+        <div class="mobile-btn" onmousedown="move('left')" ontouchstart="move('left')">⬅</div>
+        <div class="mobile-btn" onmousedown="move('right')" ontouchstart="move('right')">➡</div>
+        <div class="mobile-btn" onmousedown="move('down')" ontouchstart="move('down')">⬇</div>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-    // === OYUN YÖNETİM SİSTEMİ ===
-    class GameManager {
-        constructor() {
-            this.scene = null;
-            this.camera = null;
-            this.renderer = null;
-            this.player = null;
-            this.npcs = [];
-            this.gameObjects = [];
+    // Oyun değişkenleri
+    let scene, camera, renderer;
+    let player, house, school, teacher;
+    let gameStarted = false;
+    let playerPos = { x: 0, z: 0 };
+    let selectedCharacter = null;
+    let score = 0;
+    let soundEnabled = true;
+    let audioContext;
+    
+    // Ses sistemi
+    function initAudio() {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch(e) {
+            console.log('Ses desteklenmiyor');
+        }
+    }
+    
+    function playSound(freq, duration) {
+        if (!audioContext || !soundEnabled) return;
+        
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+        
+        osc.start();
+        osc.stop(audioContext.currentTime + duration);
+    }
+    
+    // Oyun başlatma
+    function init() {
+        console.log('Oyun başlatılıyor...');
+        
+        // Sahne
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB);
+        
+        // Kamera
+        camera = new THREE.OrthographicCamera(
+            window.innerWidth / -50,
+            window.innerWidth / 50,
+            window.innerHeight / 50,
+            window.innerHeight / -50,
+            1, 1000
+        );
+        camera.position.set(10, 10, 10);
+        camera.lookAt(0, 0, 0);
+        
+        // Renderer
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.getElementById('gameContainer').appendChild(renderer.domElement);
+        
+        // Işık
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(10, 10, 5);
+        light.castShadow = true;
+        scene.add(light);
+        
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        
+        createWorld();
+        setupControls();
+        initAudio();
+        animate();
+        
+        // Hoşgeldin mesajı
+        showMessage("Merhaba! Oyunumuza hoşgeldiniz! 👋<br>Önce bir karakter seçin!");
+        
+        console.log('Oyun başarıyla yüklendi!');
+    }
+    
+    function createWorld() {
+        // Zemin
+        const groundGeometry = new THREE.PlaneGeometry(50, 50);
+        const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x90EE90 });
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+        
+        // Ev
+        createHouse();
+        
+        // Okul
+        createSchool();
+        
+        // Öğretmen
+        createTeacher();
+        
+        // Ağaçlar
+        createTrees();
+    }
+    
+    function createHouse() {
+        const houseGroup = new THREE.Group();
+        
+        // Ana yapı
+        const houseBody = new THREE.Mesh(
+            new THREE.BoxGeometry(4, 3, 4),
+            new THREE.MeshLambertMaterial({ color: 0xDEB887 })
+        );
+        houseBody.position.y = 1.5;
+        houseBody.castShadow = true;
+        houseGroup.add(houseBody);
+        
+        // Çatı
+        const roof = new THREE.Mesh(
+            new THREE.ConeGeometry(3, 1.5, 4),
+            new THREE.MeshLambertMaterial({ color: 0x8B4513 })
+        );
+        roof.position.y = 3.75;
+        roof.rotation.y = Math.PI / 4;
+        roof.castShadow = true;
+        houseGroup.add(roof);
+        
+        // Kapı
+        const door = new THREE.Mesh(
+            new THREE.BoxGeometry(0.8, 2, 0.1),
+            new THREE.MeshLambertMaterial({ color: 0x654321 })
+        );
+        door.position.set(0, 1, 2.05);
+        houseGroup.add(door);
+        
+        houseGroup.position.set(-15, 0, -10);
+        scene.add(houseGroup);
+        house = houseGroup;
+    }
+    
+    function createSchool() {
+        const schoolGroup = new THREE.Group();
+        
+        // Ana bina
+        const schoolBody = new THREE.Mesh(
+            new THREE.BoxGeometry(8, 4, 6),
+            new THREE.MeshLambertMaterial({ color: 0xDC143C })
+        );
+        schoolBody.position.y = 2;
+        schoolBody.castShadow = true;
+        schoolGroup.add(schoolBody);
+        
+        // Çatı
+        const roof = new THREE.Mesh(
+            new THREE.BoxGeometry(9, 0.5, 7),
+            new THREE.MeshLambertMaterial({ color: 0x4B0082 })
+        );
+        roof.position.y = 4.25;
+        roof.castShadow = true;
+        schoolGroup.add(roof);
+        
+        schoolGroup.position.set(15, 0, 10);
+        scene.add(schoolGroup);
+        school = schoolGroup;
+    }
+    
+    function createTeacher() {
+        const teacherGroup = new THREE.Group();
+        
+        // Vücut
+        const body = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.3, 0.4, 1.2),
+            new THREE.MeshLambertMaterial({ color: 0x4169E1 })
+        );
+        body.position.y = 0.6;
+        body.castShadow = true;
+        teacherGroup.add(body);
+        
+        // Kafa
+        const head = new THREE.Mesh(
+            new THREE.SphereGeometry(0.25),
+            new THREE.MeshLambertMaterial({ color: 0xFFDBB3 })
+        );
+        head.position.y = 1.45;
+        head.castShadow = true;
+        teacherGroup.add(head);
+        
+        teacherGroup.position.set(12, 0.5, 8);
+        scene.add(teacherGroup);
+        teacher = teacherGroup;
+    }
+    
+    function createTrees() {
+        for (let i = 0; i < 8; i++) {
+            const treeGroup = new THREE.Group();
             
-            this.gameState = {
-                phase: 'character_selection', // character_selection, intro, playing, minigame
-                score: 0,
-                level: 1,
-                character: null,
-                position: { x: 0, z: 0 },
-                completedQuests: [],
-                achievements: [],
-                currentDialogue: null
-            };
+            // Gövde
+            const trunk = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.2, 0.3, 2),
+                new THREE.MeshLambertMaterial({ color: 0x8B4513 })
+            );
+            trunk.position.y = 1;
+            trunk.castShadow = true;
+            treeGroup.add(trunk);
             
-            this.quests = [
-                { id: 'goto_school', name: 'Okula Git', description: 'Okulun kapısına ulaş', completed: false, reward: 50 },
-                { id: 'talk_teacher', name: 'Öğretmenle Konuş', description: 'Öğretmen Bey ile sohbet et', completed: false, reward: 30 },
-                { id: 'attend_class', name: 'Derse Katıl', description: 'Sınıfta dersi takip et', completed: false, reward: 40 },
-                { id: 'play_hopscotch', name: 'Seksek Oyna', description: 'Teneffüste seksek oyunu oyna', completed: false, reward: 25 },
-                { id: 'visit_grandpa', name: 'Dedeyi Ziyaret Et', description: 'Okul çıkışı dedenin evine uğra', completed: false, reward: 60 }
-            ];
+            // Yaprak
+            const leaves = new THREE.Mesh(
+                new THREE.SphereGeometry(1),
+                new THREE.MeshLambertMaterial({ color: 0x228B22 })
+            );
+            leaves.position.y = 2.5;
+            leaves.castShadow = true;
+            treeGroup.add(leaves);
             
-            this.achievements = [
-                { id: 'first_quest', name: 'İlk Adım', description: 'İlk görevini tamamladın!', unlocked: false },
-                { id: 'social_butterfly', name: 'Sosyal Kelebek', description: '3 farklı NPC ile konuştun', unlocked: false },
-                { id: 'good_student', name: 'İyi Öğrenci', description: 'Tüm dersleri tamamladın', unlocked: false },
-                { id: 'game_master', name: 'Oyun Ustası', description: 'Tüm mini oyunları oynadın', unlocked: false }
-            ];
+            const angle = (i / 8) * Math.PI * 2;
+            const radius = 20;
+            treeGroup.position.set(
+                Math.cos(angle) * radius,
+                0,
+                Math.sin(angle) * radius
+            );
             
-            this.inputManager = new InputManager();
-            this.audioManager = new AudioManager();
-            this.uiManager = new UIManager();
-            
-            this.init();
+            scene.add(treeGroup);
+        }
+    }
+    
+    function createPlayer(gender) {
+        if (player) {
+            scene.remove(player);
         }
         
-        async init() {
-            await this.loadAssets();
-            this.setupScene();
-            this.createWorld();
-            this.setupEventListeners();
-            this.animate();
+        const playerGroup = new THREE.Group();
+        
+        // Renk seçimi
+        const colors = {
+            male: { shirt: 0x4169E1, shorts: 0x8B4513, hat: 0xFF6B6B },
+            female: { shirt: 0xFF69B4, shorts: 0x9932CC, hat: 0xFFD700 }
+        };
+        
+        const colorScheme = colors[gender];
+        
+        // Vücut
+        const body = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.3, 0.4, 1.2),
+            new THREE.MeshLambertMaterial({ color: colorScheme.shirt })
+        );
+        body.position.y = 0.6;
+        body.castShadow = true;
+        playerGroup.add(body);
+        
+        // Kafa
+        const head = new THREE.Mesh(
+            new THREE.SphereGeometry(0.25),
+            new THREE.MeshLambertMaterial({ color: 0xFFDBB3 })
+        );
+        head.position.y = 1.45;
+        head.castShadow = true;
+        playerGroup.add(head);
+        
+        // Şapka
+        const hat = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.28, 0.28, 0.12),
+            new THREE.MeshLambertMaterial({ color: colorScheme.hat })
+        );
+        hat.position.y = 1.65;
+        hat.castShadow = true;
+        playerGroup.add(hat);
+        
+        // Şort
+        const shorts = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.35, 0.35, 0.6),
+            new THREE.MeshLambertMaterial({ color: colorScheme.shorts })
+        );
+        shorts.position.y = -0.1;
+        shorts.castShadow = true;
+        playerGroup.add(shorts);
+        
+        // Çanta
+        const backpack = new THREE.Mesh(
+            new THREE.BoxGeometry(0.4, 0.5, 0.2),
+            new THREE.MeshLambertMaterial({ color: 0x228B22 })
+        );
+        backpack.position.set(0, 0.8, -0.3);
+        backpack.castShadow = true;
+        playerGroup.add(backpack);
+        
+        playerGroup.position.set(0, 0.5, 0);
+        scene.add(playerGroup);
+        player = playerGroup;
+        
+        return playerGroup;
+    }
+    
+    // Kontroller
+    function setupControls() {
+        document.addEventListener('keydown', (event) => {
+            if (!player) return;
+            
+            const moveDistance = 0.5;
+            let moved = false;
+            
+            switch(event.key.toLowerCase()) {
+                case 'w':
+                case 'arrowup':
+                    playerPos.z += moveDistance;
+                    moved = true;
+                    break;
+                case 's':
+                case 'arrowdown':
+                    playerPos.z -= moveDistance;
+                    moved = true;
+                    break;
+                case 'a':
+                case 'arrowleft':
+                    playerPos.x -= moveDistance;
+                    moved = true;
+                    break;
+                case 'd':
+                case 'arrowright':
+                    playerPos.x += moveDistance;
+                    moved = true;
+                    break;
+                case 'e':
+                    checkInteractions();
+                    break;
+            }
+            
+            if (moved) {
+                // Sınır kontrolü
+                playerPos.x = Math.max(-20, Math.min(20, playerPos.x));
+                playerPos.z = Math.max(-20, Math.min(20, playerPos.z));
+                
+                player.position.x = playerPos.x;
+                player.position.z = playerPos.z;
+                
+                // Kamera takibi
+                camera.position.x = playerPos.x + 10;
+                camera.position.z = playerPos.z + 10;
+                camera.lookAt(playerPos.x, 0, playerPos.z);
+                
+                playSound(300, 0.1);
+                checkQuests();
+            }
+        });
+    }
+    
+    // Mobil kontroller
+    function move(direction) {
+        if (!player) return;
+        
+        const moveDistance = 0.5;
+        
+        switch(direction) {
+            case 'up':
+                playerPos.z += moveDistance;
+                break;
+            case 'down':
+                playerPos.z -= moveDistance;
+                break;
+            case 'left':
+                playerPos.x -= moveDistance;
+                break;
+            case 'right':
+                playerPos.x += moveDistance;
+                break;
         }
         
-        async loadAssets() {
-            const loadingSteps = [
-                'Harita oluşturuluyor...',
-                '
+        // Sınır kontrolü
+        playerPos.x = Math.max(-20, Math.min(20, playerPos.x));
+        playerPos.z = Math.max(-20, Math.min(20, playerPos.z));
+        
+        player.position.x = playerPos.x;
+        player.position.z = playerPos.z;
+        
+        // Kamera takibi
+        camera.position.x = playerPos.x + 10;
+        camera.position.z = playerPos.z + 10;
+        camera.lookAt(playerPos.x, 0, playerPos.z);
+        
+        playSound(300, 0.1);
+        checkQuests();
+    }
+    
+    // Karakter seçimi
+    function selectCharacter(gender) {
+        selectedCharacter = gender;
+        createPlayer(gender);
+        
+        const name = gender === 'male' ? 'Ahmet' : 'Ayşe';
+        document.getElementById('characterName').textContent = name;
+        
+        showMessage(`Merhaba ${name}! Şimdi okula doğru yürümeye başla! 🏫<br>WASD tuşları ile hareket et!`);
+        playSound(500, 0.3);
+        
+        gameStarted = true;
+    }
+    
+    // Görev kontrolleri
+    function checkQuests() {
+        // Okula yaklaşma
+        const schoolDistance = Math.sqrt(
+            Math.pow(playerPos.x - 15, 2) + 
+            Math.pow(playerPos.z - 10, 2)
+        );
+        
+        if (schoolDistance < 5 && score < 50) {
+            score += 50;
+            document.getElementById('score').textContent = score;
+            showMessage("Harika! Okula vardın! 🎉<br>+50 puan kazandın!");
+            playSound(800, 0.5);
+        }
+        
+        // Öğretmene yaklaşma
+        const teacherDistance = Math.sqrt(
+            Math.pow(playerPos.x - 12, 2) + 
+            Math.pow(playerPos.z - 8, 2)
+        );
+        
+        if (teacherDistance < 3) {
+            showMessage("Öğretmen: 'Merhaba! Derse hoşgeldin!' 👨‍🏫<br>E tuşuna bas!");
+        }
+    }
+    
+    // Etkileşimler
+    function checkInteractions() {
+        const teacherDistance = Math.sqrt(
+            Math.pow(playerPos.x - 12, 2) + 
+            Math.pow(playerPos.z - 8, 2)
+        );
+        
+        if (teacherDistance < 3) {
+            score += 30;
+            document.getElementById('score').textContent = score;
+            showMessage("Öğretmen: 'Çok iyi! Derse katıldın!' 📚<br>+30 puan kazandın!");
+            playSound(600, 0.4);
+        }
+    }
+    
+    // Mesaj gösterme
+    function showMessage(text) {
+        const bubble = document.getElementById('speechBubble');
+        bubble.innerHTML = text;
+        bubble.style.left = '50%';
+        bubble.style.top = '30%';
+        bubble.style.transform = 'translateX(-50%)';
+        bubble.classList.add('show');
+        
+        setTimeout(() => {
+            bubble.classList.remove('show');
+        }, 4000);
+    }
+    
+    // Ses açma/kapama
+    function toggleSound() {
+        soundEnabled = !soundEnabled;
+        const btn = event.target;
+        btn.textContent = soundEnabled ? '🔊 Ses' : '🔇 Ses';
+        playSound(400, 0.2);
+    }
+    
+    // Animasyon döngüsü
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        // Karakter animasyonu
+        if (player) {
+            player.position.y = 0.5 + Math.sin(Date.now() * 0.01) * 0.05;
+        }
+        
+        // Öğretmen animasyonu
+        if (teacher) {
+            teacher.position.y = 0.5 + Math.sin(Date.now() * 0.005) * 0.03;
+        }
+        
+        renderer.render(scene, camera);
+    }
+    
+    // Pencere boyutu değişimi
+    window.addEventListener('resize', onWindowResize);
+    
+    function onWindowResize() {
+        camera.left = window.innerWidth / -50;
+        camera.right = window.innerWidth / 50;
+        camera.top = window.innerHeight / 50;
+        camera.bottom = window.innerHeight / -50;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    
+    // Touch event'leri için
+    document.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+    }, { passive: false });
+    
+    // Oyunu başlat
+    window.addEventListener('load', function() {
+        try {
+            init();
+        } catch (error) {
+            console.error('Oyun yüklenirken hata:', error);
+            alert('Oyun yüklenirken hata oluştu. Sayfayı yenileyin.');
+        }
+    });
+    
+</script>
 ```
+
+</body>
+</html>
