@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Yerli Fotoğraf Düzenleyici</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+</head>
+<body>
+  <input type="file" id="imageUpload" accept="image/*">
+  <canvas id="canvas" width="500" height="500" style="border:1px solid #000;"></canvas>
+
+  <button onclick="applyGrayscale()">Siyah-Beyaz</button>
+  <button onclick="cropImage()">Kırp</button>
+
+  <script>
+    const canvas = new fabric.Canvas('canvas');
+    let uploadedImage;
+
+    // Resim yükleme
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        fabric.Image.fromURL(event.target.result, function(img) {
+          canvas.clear();
+          canvas.add(img);
+          uploadedImage = img;
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Siyah-beyaz efekti
+    function applyGrayscale() {
+      if (uploadedImage) {
+        uploadedImage.filters.push(new fabric.Image.filters.Grayscale());
+        uploadedImage.applyFilters();
+        canvas.renderAll();
+      }
+    }
+
+    // Kırpma (basitçe)
+    function cropImage() {
+      if (uploadedImage) {
+        uploadedImage.set({
+          width: uploadedImage.width * 0.5,
+          height: uploadedImage.height * 0.5
+        });
+        canvas.renderAll();
+      }
+    }
+  </script>
+</body>
+</html>
