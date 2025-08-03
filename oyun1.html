@@ -546,4 +546,95 @@
             const name = gender === 'male' ? 'Ahmet' : 'Ayşe';
             document.getElementById('characterName').textContent = name;
             
-           
+            showMessage(`Karakter seçildi: ${name}`);
+            playSound(400, 0.2);
+        }
+        
+        // Görev kontrolü
+        function checkQuests() {
+            if (!selectedCharacter) return;
+            
+            // Örnek görev: Ev yakınında olunca mesaj göster
+            const distToHouse = distance(player.position, house.position);
+            if (distToHouse < 5) {
+                showMessage("Bu senin evin! Burada dinlenebilirsin.");
+            }
+            
+            // Okula yaklaşınca
+            const distToSchool = distance(player.position, school.position);
+            if (distToSchool < 7) {
+                showMessage("Okula geldin. Derslerin başlamak üzere!");
+            }
+            
+            // Öğretmene yaklaşınca
+            const distToTeacher = distance(player.position, teacher.position);
+            if (distToTeacher < 3) {
+                showMessage("Öğretmenle konuşmak için 'E' tuşuna bas.");
+            }
+        }
+        
+        function checkInteractions() {
+            if (!selectedCharacter) return;
+            
+            const distToTeacher = distance(player.position, teacher.position);
+            if (distToTeacher < 3) {
+                showMessage("Öğretmen: Başarıya giden yol çalışmaktan geçer! 📚");
+                playSound(600, 0.3);
+                score += 10;
+                document.getElementById('score').textContent = score;
+            }
+        }
+        
+        // Mesaj gösterme
+        let messageTimeout;
+        function showMessage(text) {
+            const bubble = document.getElementById('speechBubble');
+            bubble.innerHTML = text;
+            bubble.classList.add('show');
+            
+            clearTimeout(messageTimeout);
+            messageTimeout = setTimeout(() => {
+                bubble.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Ses açma/kapama
+        function toggleSound(event) {
+            soundEnabled = !soundEnabled;
+            const btn = event.target;
+            btn.textContent = soundEnabled ? '🔊 Ses' : '🔇 Ses';
+            playSound(400, 0.2);
+        }
+        
+        // Yardımcı: İki vektör arası mesafe
+        function distance(pos1, pos2) {
+            const dx = pos1.x - pos2.x;
+            const dz = pos1.z - pos2.z;
+            return Math.sqrt(dx*dx + dz*dz);
+        }
+        
+        // Animasyon döngüsü
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('load', () => {
+            init();
+        });
+        
+        // Ekran yeniden boyutlandırıldığında renderer güncelle
+        window.addEventListener('resize', () => {
+            if (!renderer || !camera) return;
+            if (camera.isOrthographicCamera) {
+                camera.left = window.innerWidth / -50;
+                camera.right = window.innerWidth / 50;
+                camera.top = window.innerHeight / 50;
+                camera.bottom = window.innerHeight / -50;
+                camera.updateProjectionMatrix();
+            }
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
