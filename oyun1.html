@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğrenci Yolculuğu - Gelişmiş Sürüm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Arial', sans-serif;
+        overflow: hidden;
+        background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+    }
+
+    #gameContainer {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+    }
+
+    /* Karakter Seçim Ekranı */
+    #characterSelection {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        color: white;
+    }
+
+    .character-panel {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        max-width: 600px;
+    }
+
+    .character-options {
+        display: flex;
+        gap: 30px;
+        margin: 30px 0;
+        justify-content: center;
+    }
+
+    .character-option {
+        background: rgba(255,255,255,0.2);
+        border: 3px solid transparent;
+        border-radius: 15px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 150px;
+    }
+
+    .character-option:hover {
+        background: rgba(255,255,255,0.3);
+        border-color: #FFD700;
+        transform: scale(1.05);
+    }
+
+    .character-option.selected {
+        border-color: #FF6B6B;
+        background: rgba(255,107,107,0.3);
+    }
+
+    .character-avatar {
+        width: 80px;
+        height: 80px;
+        background: #FFD700;
+        border-radius: 50%;
+        margin: 0 auto 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+    }
+
+    .start-btn {
+        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+        border: none;
+        color: white;
+        padding: 15px 30px;
+        font-size: 18px;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .start-btn:hover {
+        transform: scale(1.1);
+    }
+
+    /* UI Panelleri */
+    .ui-panel {
+        position: absolute;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        border-radius: 10px;
+        padding: 15px;
+        z-index: 100;
+    }
+
+    #topUI {
+        top: 20px;
+        left: 20px;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .score-display {
+        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+        padding: 10px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+
+    #questPanel {
+        top: 20px;
+        right: 20px;
+        max-width: 300px;
+    }
+
+    .quest-item {
+        background: rgba(255,255,255,0.1);
+        margin: 5px 0;
+        padding: 10px;
+        border-radius: 5px;
+        border-left: 4px solid #4ECDC4;
+    }
+
+    .quest-item.completed {
+        border-left-color: #2ECC71;
+        opacity: 0.7;
+    }
+
+    /* Mobil Kontroller */
+    #mobileControls {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        gap: 10px;
+        width: 200px;
+        height: 200px;
+    }
+
+    .control-btn {
+        background: rgba(0,0,0,0.7);
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+
+    .control-btn:active {
+        background: rgba(255,255,255,0.3);
+        transform: scale(0.95);
+    }
+
+    .control-btn:nth-child(2) { grid-column: 2; grid-row: 1; } /* Yukarı */
+    .control-btn:nth-child(3) { grid-column: 1; grid-row: 2; } /* Sol */
+    .control-btn:nth-child(4) { grid-column: 3; grid-row: 2; } /* Sağ */
+    .control-btn:nth-child(5) { grid-column: 2; grid-row: 3; } /* Aşağı */
+
+    /* Konuşma Sistemi */
+    .speech-bubble {
+        position: absolute;
+        background: white;
+        border: 3px solid #333;
+        border-radius: 20px;
+        padding: 15px 20px;
+        font-size: 16px;
+        color: #333;
+        max-width: 350px;
+        z-index: 200;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .speech-bubble::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 30px;
+        width: 0;
+        height: 0;
+        border: 15px solid transparent;
+        border-top-color: white;
+    }
+
+    .speech-bubble.show {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .speech-options {
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .speech-option {
+        background: #4ECDC4;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: background 0.3s ease;
+    }
+
+    .speech-option:hover {
+        background: #45B7B8;
+    }
+
+    /* Mini Oyun Paneli */
+    #miniGamePanel {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255,255,255,0.95);
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        display: none;
+        z-index: 300;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .mini-game-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 60px);
+        gap: 10px;
+        margin: 20px auto;
+        justify-content: center;
+    }
+
+    .mini-game-cell {
+        width: 60px;
+        height: 60px;
+        background: #E8E8E8;
+        border: 2px solid #CCC;
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        transition: all 0.2s ease;
+    }
+
+    .mini-game-cell:hover {
+        background: #D0D0D0;
+    }
+
+    .mini-game-cell.active {
+        background: #4ECDC4;
+        color: white;
+    }
+
+    /* Başarımlar */
+    #achievementNotification {
+        position: absolute;
+        top: 100px;
+        right: 20px;
+        background: linear-gradient(45deg, #FFD700, #FFA500);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        transform: translateX(400px);
+        transition: transform 0.5s ease;
+        z-index: 250;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    #achievementNotification.show {
+        transform: translateX(0);
+    }
+
+    /* Loading Screen */
+    #loadingScreen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 2000;
+        color: white;
+    }
+
+    .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 6px solid rgba(255,255,255,0.3);
+        border-top: 6px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .loading-progress {
+        width: 300px;
+        height: 10px;
+        background: rgba(255,255,255,0.3);
+        border-radius: 5px;
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    .loading-bar {
+        height: 100%;
+        background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        #mobileControls {
+            display: grid;
+        }
+        
+        .ui-panel {
+            font-size: 14px;
+            padding: 10px;
+        }
+        
+        #questPanel {
+            max-width: 250px;
+        }
+    }
+
+    @media (min-width: 769px) {
+        #mobileControls {
+            display: none;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- Loading Screen -->
+        <div id="loadingScreen">
+            <div class="loading-spinner"></div>
+            <h2>Öğrenci Yolculuğu Yükleniyor...</h2>
+            <div class="loading-progress">
+                <div class="loading-bar" id="loadingBar"></div>
+            </div>
+            <p id="loadingText">Harita oluşturuluyor...</p>
+        </div>
+
+```
+    <!-- Karakter Seçim Ekranı -->
+    <div id="characterSelection">
+        <div class="character-panel">
+            <h1>🎒 Öğrenci Yolculuğuna Hoşgeldiniz! 🎒</h1>
+            <p style="margin: 20px 0;">Karakterinizi seçin ve maceranıza başlayın!</p>
+            
+            <div class="character-options">
+                <div class="character-option" data-gender="male" data-name="Ahmet">
+                    <div class="character-avatar">👦</div>
+                    <h3>Ahmet</h3>
+                    <p>Erkek Öğrenci</p>
+                </div>
+                <div class="character-option" data-gender="female" data-name="Ayşe">
+                    <div class="character-avatar">👧</div>
+                    <h3>Ayşe</h3>
+                    <p>Kız Öğrenci</p>
+                </div>
+            </div>
+            
+            <button class="start-btn" onclick="startGame()">Maceraya Başla! 🚀</button>
+        </div>
+    </div>
+
+    <!-- Ana Oyun UI -->
+    <div id="topUI" class="ui-panel">
+        <div class="score-display">
+            <span>⭐ Puan: </span>
+            <span id="scoreValue">0</span>
+        </div>
+        <div class="score-display">
+            <span>👤 Karakter: </span>
+            <span id="characterName">-</span>
+        </div>
+        <div class="score-display">
+            <span>🏆 Seviye: </span>
+            <span id="levelValue">1</span>
+        </div>
+    </div>
+
+    <div id="questPanel" class="ui-panel">
+        <h3>📋 Görevler</h3>
+        <div id="questList"></div>
+    </div>
+
+    <!-- Mobil Kontroller -->
+    <div id="mobileControls">
+        <div class="control-btn" data-direction="up">⬆️</div>
+        <div class="control-btn" data-direction="left">⬅️</div>
+        <div class="control-btn" data-direction="right">➡️</div>
+        <div class="control-btn" data-direction="down">⬇️</div>
+    </div>
+
+    <!-- Konuşma Balonu -->
+    <div id="speechBubble" class="speech-bubble"></div>
+
+    <!-- Mini Oyun Paneli -->
+    <div id="miniGamePanel">
+        <h2 id="miniGameTitle">Mini Oyun</h2>
+        <p id="miniGameInstructions">Talimatlar burada görünecek</p>
+        <div id="miniGameContent"></div>
+        <div style="margin-top: 20px;">
+            <button class="start-btn" onclick="closeMiniGame()">Kapat</button>
+        </div>
+    </div>
+
+    <!-- Başarım Bildirimi -->
+    <div id="achievementNotification">
+        <h4>🏆 Başarım Kazandınız!</h4>
+        <p id="achievementText"></p>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+    // === OYUN YÖNETİM SİSTEMİ ===
+    class GameManager {
+        constructor() {
+            this.scene = null;
+            this.camera = null;
+            this.renderer = null;
+            this.player = null;
+            this.npcs = [];
+            this.gameObjects = [];
+            
+            this.gameState = {
+                phase: 'character_selection', // character_selection, intro, playing, minigame
+                score: 0,
+                level: 1,
+                character: null,
+                position: { x: 0, z: 0 },
+                completedQuests: [],
+                achievements: [],
+                currentDialogue: null
+            };
+            
+            this.quests = [
+                { id: 'goto_school', name: 'Okula Git', description: 'Okulun kapısına ulaş', completed: false, reward: 50 },
+                { id: 'talk_teacher', name: 'Öğretmenle Konuş', description: 'Öğretmen Bey ile sohbet et', completed: false, reward: 30 },
+                { id: 'attend_class', name: 'Derse Katıl', description: 'Sınıfta dersi takip et', completed: false, reward: 40 },
+                { id: 'play_hopscotch', name: 'Seksek Oyna', description: 'Teneffüste seksek oyunu oyna', completed: false, reward: 25 },
+                { id: 'visit_grandpa', name: 'Dedeyi Ziyaret Et', description: 'Okul çıkışı dedenin evine uğra', completed: false, reward: 60 }
+            ];
+            
+            this.achievements = [
+                { id: 'first_quest', name: 'İlk Adım', description: 'İlk görevini tamamladın!', unlocked: false },
+                { id: 'social_butterfly', name: 'Sosyal Kelebek', description: '3 farklı NPC ile konuştun', unlocked: false },
+                { id: 'good_student', name: 'İyi Öğrenci', description: 'Tüm dersleri tamamladın', unlocked: false },
+                { id: 'game_master', name: 'Oyun Ustası', description: 'Tüm mini oyunları oynadın', unlocked: false }
+            ];
+            
+            this.inputManager = new InputManager();
+            this.audioManager = new AudioManager();
+            this.uiManager = new UIManager();
+            
+            this.init();
+        }
+        
+        async init() {
+            await this.loadAssets();
+            this.setupScene();
+            this.createWorld();
+            this.setupEventListeners();
+            this.animate();
+        }
+        
+        async loadAssets() {
+            const loadingSteps = [
+                'Harita oluşturuluyor...',
+                '
+```
