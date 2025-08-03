@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Öğrenci Yolculuğu</title>
     <style>
         body {
@@ -106,14 +106,12 @@
             border: 2px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             color: white;
-            font-size: 24px;
+            font-size: 18px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             user-select: none;
-            width: 50px;
-            height: 50px;
         }
         
         .mobile-btn:active {
@@ -139,25 +137,25 @@
             <div>Puan: <span id="score">0</span></div>
             <div>Karakter: <span id="characterName">Seçilmedi</span></div>
         </div>
-        
+
         <div id="speechBubble" class="speech-bubble"></div>
         
         <div id="controls">
             <div>Hareket: WASD veya Mobil Butonlar</div>
             <button class="control-btn" onclick="selectCharacter('male')">👦 Erkek</button>
             <button class="control-btn" onclick="selectCharacter('female')">👧 Kız</button>
-            <button class="control-btn" onclick="toggleSound()">🔊 Ses</button>
+            <button class="control-btn" onclick="toggleSound(event)">🔊 Ses</button>
         </div>
         
         <div id="mobileControls">
-            <div class="mobile-btn" ontouchstart="move('up')">⬆</div>
-            <div class="mobile-btn" ontouchstart="move('left')">⬅</div>
-            <div class="mobile-btn" ontouchstart="move('right')">➡</div>
-            <div class="mobile-btn" ontouchstart="move('down')">⬇</div>
+            <div class="mobile-btn" onmousedown="move('up')" ontouchstart="move('up')">⬆</div>
+            <div class="mobile-btn" onmousedown="move('left')" ontouchstart="move('left')">⬅</div>
+            <div class="mobile-btn" onmousedown="move('right')" ontouchstart="move('right')">➡</div>
+            <div class="mobile-btn" onmousedown="move('down')" ontouchstart="move('down')">⬇</div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r164/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         // Oyun değişkenleri
         let scene, camera, renderer;
@@ -168,7 +166,6 @@
         let score = 0;
         let soundEnabled = true;
         let audioContext;
-        let schoolVisited = false;
         
         // Ses sistemi
         function initAudio() {
@@ -206,10 +203,10 @@
             
             // Kamera
             camera = new THREE.OrthographicCamera(
-                window.innerWidth / -100,
-                window.innerWidth / 100,
-                window.innerHeight / 100,
-                window.innerHeight / -100,
+                window.innerWidth / -50,
+                window.innerWidth / 50,
+                window.innerHeight / 50,
+                window.innerHeight / -50,
                 1, 1000
             );
             camera.position.set(10, 10, 10);
@@ -502,17 +499,6 @@
                     checkQuests();
                 }
             });
-            
-            // Mobil kontroller için touch event'leri
-            document.querySelectorAll('.mobile-btn').forEach(btn => {
-                btn.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    const direction = btn.textContent.includes('⬆') ? 'up' : 
-                                     btn.textContent.includes('⬇') ? 'down' : 
-                                     btn.textContent.includes('⬅') ? 'left' : 'right';
-                    move(direction);
-                });
-            });
         }
         
         // Mobil kontroller
@@ -556,127 +542,8 @@
         function selectCharacter(gender) {
             selectedCharacter = gender;
             createPlayer(gender);
-            playerPos = { x: 0, z: 0 };
-            player.position.set(0, 0.5, 0);
             
             const name = gender === 'male' ? 'Ahmet' : 'Ayşe';
             document.getElementById('characterName').textContent = name;
             
-            showMessage(`Merhaba ${name}! Şimdi okula doğru yürümeye başla! 🏫<br>WASD tuşları ile hareket et!`);
-            playSound(500, 0.3);
-            
-            gameStarted = true;
-        }
-        
-        // Görev kontrolleri
-        function checkQuests() {
-            // Okula yaklaşma
-            if (!schoolVisited) {
-                const schoolDistance = Math.sqrt(
-                    Math.pow(playerPos.x - 15, 2) + 
-                    Math.pow(playerPos.z - 10, 2)
-                );
-                
-                if (schoolDistance < 5) {
-                    schoolVisited = true;
-                    score += 50;
-                    document.getElementById('score').textContent = score;
-                    showMessage("Harika! Okula vardın! 🎉<br>+50 puan kazandın!");
-                    playSound(800, 0.5);
-                }
-            }
-            
-            // Öğretmene yaklaşma
-            const teacherDistance = Math.sqrt(
-                Math.pow(playerPos.x - 12, 2) + 
-                Math.pow(playerPos.z - 8, 2)
-            );
-            
-            if (teacherDistance < 3) {
-                showMessage("Öğretmen: 'Merhaba! Derse hoşgeldin!' 👨‍🏫<br>E tuşuna bas!");
-            }
-        }
-        
-        // Etkileşimler
-        function checkInteractions() {
-            const teacherDistance = Math.sqrt(
-                Math.pow(playerPos.x - 12, 2) + 
-                Math.pow(playerPos.z - 8, 2)
-            );
-            
-            if (teacherDistance < 3) {
-                score += 30;
-                document.getElementById('score').textContent = score;
-                showMessage("Öğretmen: 'Çok iyi! Derse katıldın!' 📚<br>+30 puan kazandın!");
-                playSound(600, 0.4);
-            }
-        }
-        
-        // Mesaj gösterme
-        function showMessage(text) {
-            const bubble = document.getElementById('speechBubble');
-            bubble.innerHTML = text;
-            bubble.style.left = '50%';
-            bubble.style.top = '30%';
-            bubble.style.transform = 'translateX(-50%)';
-            bubble.classList.add('show');
-            
-            setTimeout(() => {
-                bubble.classList.remove('show');
-            }, 4000);
-        }
-        
-        // Ses açma/kapama
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            const btn = event.target;
-            btn.textContent = soundEnabled ? '🔊 Ses' : '🔇 Ses';
-            playSound(400, 0.2);
-        }
-        
-        // Animasyon döngüsü
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            // Karakter animasyonu
-            if (player) {
-                player.position.y = 0.5 + Math.sin(Date.now() * 0.01) * 0.05;
-            }
-            
-            // Öğretmen animasyonu
-            if (teacher) {
-                teacher.position.y = 0.5 + Math.sin(Date.now() * 0.005) * 0.03;
-            }
-            
-            renderer.render(scene, camera);
-        }
-        
-        // Pencere boyutu değişimi
-        window.addEventListener('resize', onWindowResize);
-        
-        function onWindowResize() {
-            camera.left = window.innerWidth / -100;
-            camera.right = window.innerWidth / 100;
-            camera.top = window.innerHeight / 100;
-            camera.bottom = window.innerHeight / -100;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-        
-        // Touch event'leri için
-        document.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-        }, { passive: false });
-        
-        // Oyunu başlat
-        window.addEventListener('load', function() {
-            try {
-                init();
-            } catch (error) {
-                console.error('Oyun yüklenirken hata:', error);
-                alert('Oyun yüklenirken hata oluştu. Sayfayı yenileyin.');
-            }
-        });
-    </script>
-</body>
-</html>
+           
