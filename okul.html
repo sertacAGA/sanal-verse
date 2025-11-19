@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sanal 3D Sınıf - Eğitim Platformu</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    
+    <style>
+        /* GENEL STİLLER */
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        
+        /* ARAYÜZ KATMANI (HUD) */
+        #ui-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; /* Tıklamaların 3D sahneye geçmesi için */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* AKILLI TAHTA PANELİ */
+        #smart-board {
+            width: 70%;
+            height: 80%;
+            background: rgba(20, 20, 30, 0.9); /* Koyu şeffaf tema */
+            border-radius: 15px;
+            border: 2px solid #444;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            pointer-events: auto; /* Panele tıklanabilsin */
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            color: white;
+        }
+
+        /* SOL MENÜ (Konu Başlıkları) */
+        #sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-right: 1px solid #444;
+            overflow-y: auto;
+        }
+        .topic-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.3s;
+        }
+        .topic-btn:hover, .topic-btn.active { background: #007BFF; }
+
+        /* İÇERİK ALANI */
+        #content-area {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* ADIM GÖSTERGESİ */
+        #progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #aaa;
+        }
+        .step { padding: 5px 10px; border-radius: 10px; background: #222; }
+        .step.active { background: #28a745; color: white; }
+
+        /* DİNAMİK İÇERİK KUTUSU */
+        #dynamic-content {
+            flex: 1;
+            overflow-y: auto;
+            font-size: 1.2em;
+            line-height: 1.6;
+            text-align: center;
+            display: flex; /* İçeriği ortalamak için */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        img { max-width: 90%; max-height: 400px; border-radius: 10px; box-shadow: 0 0 10px black;}
+        iframe { width: 100%; height: 400px; border: none; border-radius: 10px; }
+        
+        /* BUTONLAR */
+        .nav-btn {
+            padding: 10px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn-next { background: #007BFF; color: white; }
+        .btn-prev { background: #555; color: white; }
+        
+        #controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* GİRİŞ EKRANI */
+        #start-screen {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        #start-btn {
+            padding: 15px 40px; font-size: 1.5em; background: #28a745; 
+            color: white; border:none; border-radius: 10px; cursor: pointer; margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <a-scene>
+        <a-sky color="#111"></a-sky>
+        
+        <a-plane position="0 0 -4" rotation="-90 0 0" width="50" height="50" color="#222"></a-plane>
+        <a-grid></a-grid> <a-box position="-5 0.5 -10" color="#4CC3D9" animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"></a-box>
+        <a-sphere position="5 1 -12" radius="1.25" color="#EF2D5E"></a-sphere>
+        
+        <a-entity position="0 1.6 0">
+            <a-camera look-controls="enabled: true" wasd-controls="enabled: false"></a-camera>
+        </a-entity>
+    </a-scene>
+
+    <div id="start-screen">
+        <h1>Sanal Sınıf Sistemine Hoşgeldiniz</h1>
+        <p>Matematik, Robotik ve Uzay Atölyeleri</p>
+        <button id="start-btn" onclick="startSystem()">Dersi Başlat</button>
+    </div>
+
+    <div id="ui-layer" style="display:none;">
+        <div id="smart-board">
+            <div id="sidebar">
+                <h3>Konular</h3>
+                <div id="topic-list">
+                    </div>
+            </div>
+
+            <div id="content-area">
+                <div id="header-area">
+                    <h2 id="lesson-title">Konu Başlığı</h2>
+                </div>
+
+                <div id="progress-bar">
+                    <span class="step" id="step-0">1. Okuma</span>
+                    <span class="step" id="step-1">2. Görsel</span>
+                    <span class="step" id="step-2">3. Video</span>
+                    <span class="step" id="step-3">4. Etkinlik</span>
+                    <span class="step" id="step-4">5. Test</span>
+                </div>
+
+                <div id="dynamic-content">
+                    </div>
+
+                <div id="controls">
+                    <button class="nav-btn btn-prev" onclick="changeStep(-1)">Geri</button>
+                    <button class="nav-btn btn-next" onclick="changeStep(1)">İleri</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- VERİ YAPISI (Ders İçerikleri) ---
+        const curriculum = [
+            {
+                id: 0,
+                title: "Matematik: Geometriye Giriş",
+                text: "Merhaba arkadaşlar. Bugün geometriye giriş yapıyoruz. Geometri, şekillerin, boyutların ve nesnelerin birbirine göre konumlarının incelendiği matematik dalıdır. Üçgenler, kareler ve daireler temel şekillerimizdir.",
+                image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80",
+                video: "https://www.youtube.com/embed/NBg8v95fD1U", // Örnek embed
+                activity: "Etkinlik: Önündeki kağıda bir dik üçgen çiz ve hipotenüsü göster.",
+                quiz: [
+                    { q: "Hangisi 3 kenarlı bir şekildir?", options: ["Kare", "Üçgen", "Daire"], ans: 1 }
+                ]
+            },
+            {
+                id: 1,
+                title: "Uzay: Güneş Sistemi",
+                text: "Güneş sistemi, Güneş ve onun çekim etkisi altında kalan sekiz gezegen ile bunların uydularından oluşur. Dünya'mız Güneş'e en yakın üçüncü gezegendir. Mars ise kızıl gezegen olarak bilinir.",
+                image: "https://images.unsplash.com/photo-1614730341194-75c60740a073?auto=format&fit=crop&w=800&q=80",
+                video: "https://www.youtube.com/embed/libKVRa01L8",
+                activity: "Etkinlik: Güneş sistemindeki gezegenleri sırasıyla saymaya çalış.",
+                quiz: [
+                    { q: "Kızıl gezegen hangisidir?", options: ["Venüs", "Mars", "Jüpiter"], ans: 1 }
+                ]
+            }
+        ];
+
+        // --- DEĞİŞKENLER ---
+        let currentTopicIndex = 0;
+        let currentStep = 0; // 0:Text, 1:Image, 2:Video, 3:Activity, 4:Quiz
+        let synth = window.speechSynthesis;
+        let utterance = new SpeechSynthesisUtterance();
+
+        // --- SİSTEMİ BAŞLAT ---
+        function startSystem() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('ui-layer').style.display = 'flex';
+            
+            // Menüyü Oluştur
+            const list = document.getElementById('topic-list');
+            curriculum.forEach((topic, index) => {
+                let btn = document.createElement('button');
+                btn.className = 'topic-btn';
+                btn.innerText = topic.title;
+                btn.onclick = () => loadTopic(index);
+                list.appendChild(btn);
+            });
+
+            loadTopic(0); // İlk konuyu yükle
+        }
+
+        // --- KONU YÜKLEME ---
+        function loadTopic(index) {
+            currentTopicIndex = index;
+            currentStep = 0;
+            
+            // Menü aktiflik durumu
+            let buttons = document.getElementsByClassName('topic-btn');
+            for(let btn of buttons) btn.classList.remove('active');
+            buttons[index].classList.add('active');
+
+            updateDisplay();
+        }
+
+        // --- İLERİ / GERİ ---
+        function changeStep(direction) {
+            if (direction === 1 && currentStep < 4) {
+                currentStep++;
+            } else if (direction === -1 && currentStep > 0) {
+                currentStep--;
+            }
+            updateDisplay();
+        }
+
+        // --- EKRANI GÜNCELLE (ANA MANTIK) ---
+        function updateDisplay() {
+            const data = curriculum[currentTopicIndex];
+            const container = document.getElementById('dynamic-content');
+            const title = document.getElementById('lesson-title');
+            
+            // TTS Durdur
+            synth.cancel();
+
+            // Adım Göstergesi Güncelle
+            for(let i=0; i<=4; i++) {
+                document.getElementById(`step-${i}`).classList.remove('active');
+            }
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+
+            title.innerText = data.title;
+            container.innerHTML = ""; // İçeriği temizle
+
+            // ADIMLARA GÖRE İÇERİK
+            switch(currentStep) {
+                case 0: // METİN & OKUMA
+                    container.innerHTML = `<p style="padding:20px; font-size:1.3em;">${data.text}</p>`;
+                    speakText(data.text);
+                    break;
+                
+                case 1: // RESİM
+                    container.innerHTML = `<img src="${data.image}" alt="Ders Görseli">`;
+                    break;
+
+                case 2: // VİDEO
+                    container.innerHTML = `<iframe src="${data.video}" allowfullscreen></iframe>`;
+                    break;
+
+                case 3: // ETKİNLİK
+                    container.innerHTML = `
+                        <div style="background:#444; padding:20px; border-radius:10px;">
+                            <h3>Sıra Sende!</h3>
+                            <p>${data.activity}</p>
+                            <textarea placeholder="Cevabını veya notlarını buraya yaz..." style="width:100%; height:100px; margin-top:10px;"></textarea>
+                        </div>
+                    `;
+                    break;
+
+                case 4: // TEST (Basit Soru)
+                    let q = data.quiz[0];
+                    container.innerHTML = `
+                        <div style="text-align:left; width:80%;">
+                            <h3>Ders Sonu Testi</h3>
+                            <p><strong>Soru:</strong> ${q.q}</p>
+                            ${q.options.map((opt, i) => 
+                                `<button onclick="checkAnswer(${i}, ${q.ans})" style="display:block; width:100%; padding:10px; margin:5px 0; cursor:pointer;">${opt}</button>`
+                            ).join('')}
+                            <p id="quiz-result" style="margin-top:10px; font-weight:bold;"></p>
+                        </div>
+                    `;
+                    break;
+            }
+        }
+
+        // --- TTS (Metin Okuma) ---
+        function speakText(text) {
+            utterance.text = text;
+            utterance.lang = 'tr-TR'; // Türkçe
+            synth.speak(utterance);
+        }
+
+        // --- TEST KONTROL ---
+        window.checkAnswer = function(selected, correct) {
+            const res = document.getElementById('quiz-result');
+            if (selected === correct) {
+                res.style.color = '#28a745';
+                res.innerText = "Tebrikler! Doğru Cevap.";
+            } else {
+                res.style.color = '#dc3545';
+                res.innerText = "Maalesef yanlış, tekrar dene.";
+            }
+        }
+
+    </script>
+</body>
+</html>
