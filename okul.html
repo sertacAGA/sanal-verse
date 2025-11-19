@@ -2,451 +2,332 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Sanal Okul V2 - İnsansız Eğitim</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sanal Okul V3 - iPad Uyumlu</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     
+    <script src="icerik.js"></script>
+
     <style>
-        /* --- TEMEL AYARLAR --- */
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; user-select: none; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; user-select: none; touch-action: none; }
         
-        /* --- ARAYÜZ KATMANI (TAHTA ÜZERİ) --- */
-        #ui-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; display: flex; justify-content: center; align-items: center; z-index: 10;
-        }
-
-        /* --- AKILLI TAHTA GÖVDESİ --- */
-        #smart-board {
-            width: 85%; height: 85%;
-            background: #f4f4f4; /* Beyaz Tahta Rengi */
-            border: 15px solid #333; /* Çerçeve */
-            border-radius: 5px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            pointer-events: auto;
-            display: flex; flex-direction: row; overflow: hidden;
-            color: #333; position: relative;
-        }
-
-        /* --- SOL MENÜ (AKORDEON) --- */
-        #sidebar {
-            width: 280px; background: #2c3e50; color: white;
-            display: flex; flex-direction: column; border-right: 2px solid #ccc;
-        }
-        #user-info {
-            padding: 20px; background: #1a252f; border-bottom: 1px solid #444; text-align: center;
-        }
-        #score-display { font-size: 1.5em; color: #f1c40f; font-weight: bold; margin-top: 5px; }
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; justify-content: center; align-items: center; z-index: 10; }
+        #smart-board { width: 90%; height: 90%; background: #f9f9f9; border: 12px solid #333; border-radius: 8px; pointer-events: auto; display: flex; flex-direction: row; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
         
+        /* Sol Menü */
+        #sidebar { width: 260px; background: #2c3e50; color: white; display: flex; flex-direction: column; overflow: hidden; }
+        #user-info { padding: 15px; background: #1a252f; text-align: center; border-bottom: 1px solid #444; }
         #menu-container { flex: 1; overflow-y: auto; }
-
-        /* Akordeon Stilleri */
-        .main-subject {
-            width: 100%; padding: 15px; background: #34495e; color: white;
-            border: none; text-align: left; outline: none; cursor: pointer;
-            font-weight: bold; border-bottom: 1px solid #2c3e50; transition: 0.3s;
-        }
-        .main-subject:hover, .main-subject.active { background: #2980b9; }
-        .sub-topic-container { display: none; background: #ecf0f1; }
-        .sub-topic {
-            width: 100%; padding: 12px 20px; border: none; background: transparent;
-            text-align: left; cursor: pointer; color: #333; border-bottom: 1px solid #ddd;
-            font-size: 0.9em; display: flex; justify-content: space-between;
-        }
-        .sub-topic:hover { background: #bdc3c7; }
-        .sub-topic.completed::after { content: '✓'; color: green; font-weight: bold; }
+        
+        .main-subject { width: 100%; padding: 15px; background: #34495e; color: white; border: none; text-align: left; font-weight: bold; border-bottom: 1px solid #2c3e50; cursor: pointer; }
+        .sub-topic { width: 100%; padding: 12px 20px; border: none; background: #ecf0f1; text-align: left; border-bottom: 1px solid #bdc3c7; cursor: pointer; font-size: 0.9em; color: #333; }
+        .sub-topic.completed::after { content: ' ★'; color: orange; }
         .sub-topic.active-lesson { background: #3498db; color: white; }
 
-        /* --- İÇERİK ALANI --- */
-        #content-area {
-            flex: 1; padding: 20px 40px; display: flex; flex-direction: column; position: relative;
-            background: white;
-        }
-
-        /* Başlık ve İlerleme */
-        #lesson-header { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
-        #lesson-title { margin: 0; font-size: 1.8em; color: #2c3e50; }
+        /* İçerik Alanı */
+        #content-area { flex: 1; padding: 20px; display: flex; flex-direction: column; background: white; position: relative; overflow: hidden; }
+        #lesson-header h2 { margin: 0 0 10px 0; color: #2c3e50; }
         
-        #progress-steps { display: flex; gap: 10px; margin-top: 10px; }
-        .step-dot { width: 12px; height: 12px; background: #ddd; border-radius: 50%; }
-        .step-dot.active { background: #27ae60; transform: scale(1.2); }
+        /* İlerleme Çubuğu */
+        #progress-steps { display: flex; gap: 8px; margin-bottom: 15px; justify-content: center; }
+        .step-badge { padding: 5px 10px; background: #eee; border-radius: 15px; font-size: 0.8em; color: #777; }
+        .step-badge.active { background: #27ae60; color: white; font-weight: bold; }
 
-        /* Dinamik İçerik Kutusu */
-        #dynamic-content { flex: 1; overflow-y: auto; font-size: 1.1em; line-height: 1.6; }
+        /* Dinamik Alan */
+        #dynamic-content { flex: 1; overflow-y: auto; padding-right: 10px; font-size: 1.1em; line-height: 1.6; }
         
-        /* Medya Stilleri */
-        img { max-width: 100%; max-height: 350px; border-radius: 8px; border: 1px solid #ddd; display: block; margin: 0 auto; }
-        iframe { width: 100%; height: 350px; border-radius: 8px; }
-        .error-msg { color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; text-align: center; }
+        /* Galeri Stilleri */
+        .image-gallery { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
+        .image-gallery img { height: 300px; border-radius: 8px; border: 1px solid #ddd; object-fit: cover; }
+        
+        /* Örnekler Kutusu */
+        .example-box { background: #e8f6f3; border-left: 5px solid #1abc9c; padding: 15px; margin: 10px 0; border-radius: 4px; }
 
-        /* Çizim Alanı */
-        #drawing-canvas {
-            border: 2px dashed #333; background: #fff; cursor: crosshair;
-            touch-action: none; display: block; margin: 10px auto;
-        }
-        .canvas-tools { text-align: center; margin-top: 5px; }
+        /* Çizim */
+        #drawing-canvas { border: 2px dashed #555; background: #fff; touch-action: none; display: block; margin: 0 auto; max-width: 100%; }
+        
+        /* Quiz */
+        .quiz-q { margin-bottom: 15px; background: #f8f9fa; pading: 10px; border-radius: 5px; }
+        .quiz-opt { display: block; width: 100%; padding: 10px; margin: 5px 0; background: white; border: 1px solid #ccc; text-align: left; cursor: pointer; }
+        .quiz-opt.correct { background: #d4edda; }
+        .quiz-opt.wrong { background: #f8d7da; }
 
-        /* Quiz Stilleri */
-        .quiz-question { background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 5px solid #3498db; }
-        .quiz-opt { display: block; width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; background: white; cursor: pointer; text-align: left; }
-        .quiz-opt:hover { background: #f0f0f0; }
-        .quiz-opt.correct { background: #d4edda; border-color: #c3e6cb; }
-        .quiz-opt.wrong { background: #f8d7da; border-color: #f5c6cb; }
-
-        /* Alt Kontroller */
-        #controls { display: flex; justify-content: space-between; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
-        .btn { padding: 10px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; transition: 0.2s; }
+        /* Butonlar */
+        #controls { margin-top: 15px; display: flex; justify-content: space-between; padding-top: 10px; border-top: 1px solid #eee; }
+        .btn { padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; }
         .btn-next { background: #2980b9; color: white; }
         .btn-prev { background: #95a5a6; color: white; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn:disabled { opacity: 0.5; }
 
+        .section-note { font-size: 0.9em; color: #666; margin-bottom: 10px; font-style: italic; display: block; }
     </style>
 </head>
 <body>
 
-    <a-scene>
-        <a-entity light="type: ambient; color: #BBB"></a-entity>
-        <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
-
-        <a-box position="0 2.5 -4.1" width="12" height="5" depth="0.1" color="#e0e0e0"></a-box> <a-box position="-6 2.5 0" width="0.1" height="5" depth="10" color="#dcdcdc"></a-box> <a-box position="6 2.5 0" width="0.1" height="5" depth="10" color="#dcdcdc"></a-box> <a-plane position="0 0 0" rotation="-90 0 0" width="12" height="10" color="#8B4513"></a-plane> <a-plane position="0 5 0" rotation="90 0 0" width="12" height="10" color="#fff"></a-plane> <a-box position="0 0.5 -2.5" width="2" height="1" depth="1" color="#5D4037"></a-box>
-
-        <a-entity position="0 1.6 1.5">
-            <a-camera look-controls="enabled: false"></a-camera> </a-entity>
+    <a-scene embedded>
+        <a-entity light="type: ambient; color: #CCC"></a-entity>
+        <a-box position="0 2 -5" width="15" height="8" depth="0.1" color="#e0e0e0"></a-box>
+        <a-plane position="0 0 -2" rotation="-90 0 0" width="15" height="15" color="#a1887f"></a-plane>
+        <a-entity position="0 1.6 2"><a-camera look-controls="enabled: false"></a-camera></a-entity>
     </a-scene>
 
     <div id="ui-layer">
         <div id="smart-board">
-            
             <div id="sidebar">
                 <div id="user-info">
-                    <div>Öğrenci Puanı</div>
-                    <div id="score-display">0</div>
+                    <h3>Öğrenci Paneli</h3>
+                    <div id="score-display">0 Puan</div>
                 </div>
-                <div id="menu-container">
-                    </div>
+                <div id="menu-container"></div>
             </div>
 
             <div id="content-area">
                 <div id="lesson-header">
-                    <h2 id="lesson-title">Ders Seçiniz</h2>
+                    <h2 id="lesson-title">Ders Seçimi</h2>
                     <div id="progress-steps">
-                        <div class="step-dot" id="dot-0"></div>
-                        <div class="step-dot" id="dot-1"></div>
-                        <div class="step-dot" id="dot-2"></div>
-                        <div class="step-dot" id="dot-3"></div>
-                        <div class="step-dot" id="dot-4"></div>
+                        <span class="step-badge" id="s-0">Konu</span>
+                        <span class="step-badge" id="s-1">Görsel</span>
+                        <span class="step-badge" id="s-2">Video</span>
+                        <span class="step-badge" id="s-3">Örnekler</span>
+                        <span class="step-badge" id="s-4">Etkinlik</span>
+                        <span class="step-badge" id="s-5">Sınav</span>
                     </div>
                 </div>
-
                 <div id="dynamic-content">
-                    <div style="text-align:center; margin-top:50px; color:#777;">
-                        <h3>Hoşgeldiniz!</h3>
-                        <p>Lütfen sol menüden bir ders başlığı seçerek eğitime başlayın.</p>
-                    </div>
+                    <p style="text-align:center; margin-top:50px;">Lütfen sol menüden bir ders seçin.</p>
                 </div>
-
                 <div id="controls">
                     <button class="btn btn-prev" id="btn-prev" onclick="changeStep(-1)" disabled>Geri</button>
                     <button class="btn btn-next" id="btn-next" onclick="changeStep(1)" disabled>İleri</button>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script>
-        // --- VERİ TABANI (5 Ana Ders, 3'er Alt Başlık) ---
-        const curriculumData = [
-            {
-                subject: "Matematik",
-                lessons: [
-                    { id: "mat1", title: "Geometri Temelleri", points: 35, content: {
-                        text: "Geometri, şekillerin dünyasıdır. Bugün nokta, doğru ve düzlem kavramlarını öğreneceğiz.",
-                        image: "https://images.unsplash.com/photo-1596495578065-6e0763fa1178?auto=format&fit=crop&w=600&q=80",
-                        video: "https://www.youtube.com/embed/NBg8v95fD1U",
-                        activityType: "draw", activityText: "Aşağıdaki alana bir dik üçgen ve bir kare çiz.",
-                        quiz: [
-                            { q: "Üçgenin iç açıları toplamı kaç derecedir?", opts: ["90", "180", "360"], ans: 1 },
-                            { q: "4 kenarı eşit olan şekil hangisidir?", opts: ["Dikdörtgen", "Kare", "Yamuk"], ans: 1 }
-                        ]
-                    }},
-                    { id: "mat2", title: "Cebirsel İfadeler", points: 35, content: { text: "X ve Y gibi bilinmeyenlerle işlem yapmaya cebir denir.", image: "", video: "", activityType: "text", quiz: [] } },
-                    { id: "mat3", title: "Olasılık", points: 35, content: { text: "Bir olayın gerçekleşme ihtimalini hesaplama bilimidir.", image: "", video: "", activityType: "text", quiz: [] } }
-                ]
-            },
-            {
-                subject: "Robotik Kodlama",
-                lessons: [
-                    { id: "rob1", title: "Algoritma Mantığı", points: 35, content: {
-                        text: "Algoritma, bir problemi çözmek için izlenen adım adım yoldur. Yemek tarifi bir algoritmadır.",
-                        image: "https://images.unsplash.com/photo-1555255707-c07966088b7b?auto=format&fit=crop&w=600&q=80",
-                        video: "https://www.youtube.com/embed/8j0UDiN7my4",
-                        activityType: "draw", activityText: "Bir robotun labirentten çıkış yolunu çiz.",
-                        quiz: [
-                            { q: "Algoritma nedir?", opts: ["Yemek", "Adım adım çözüm", "Robot"], ans: 1 },
-                            { q: "Döngü ne işe yarar?", opts: ["Tekrar eder", "Durur", "Bozulur"], ans: 0 }
-                        ]
-                    }},
-                    { id: "rob2", title: "Sensörler", points: 35, content: { text: "Sensörler robotların çevreyi görmesini sağlar.", image: "", video: "", activityType: "text", quiz: [] } },
-                    { id: "rob3", title: "Motor Sürücüler", points: 35, content: { text: "Robotun hareket etmesini sağlayan devrelerdir.", image: "", video: "", activityType: "text", quiz: [] } }
-                ]
-            },
-            { subject: "Uzay Bilimleri", lessons: [ {id:"uz1", title:"Gezegenler", points:35, content:{}}, {id:"uz2", title:"Kara Delikler", points:35, content:{}}, {id:"uz3", title:"Roket Fiziği", points:35, content:{}} ] },
-            { subject: "Tasarım", lessons: [ {id:"tas1", title:"Perspektif", points:35, content:{}}, {id:"tas2", title:"Renk Teorisi", points:35, content:{}}, {id:"tas3", title:"Ergonomi", points:35, content:{}} ] },
-            { subject: "Fizik", lessons: [ {id:"fiz1", title:"Newton Yasaları", points:35, content:{}}, {id:"fiz2", title:"Enerji", points:35, content:{}}, {id:"fiz3", title:"Elektrik", points:35, content:{}} ] }
-        ];
-
-        // --- DURUM YÖNETİMİ ---
-        let userState = {
-            score: parseInt(localStorage.getItem('schoolScore')) || 0,
-            completedLessons: JSON.parse(localStorage.getItem('schoolCompleted')) || []
-        };
-
+        // --- DEĞİŞKENLER ---
+        // curriculumData artık icerik.js dosyasından geliyor.
+        let userScore = parseInt(localStorage.getItem('v3_score')) || 0;
+        let completed = JSON.parse(localStorage.getItem('v3_completed')) || [];
+        
         let currentLesson = null;
-        let currentStep = 0;
+        let step = 0;
         let synth = window.speechSynthesis;
         let drawCtx = null;
         let isDrawing = false;
 
-        // --- BAŞLANGIÇ ---
-        window.onload = function() {
-            renderMenu();
-            updateScoreUI();
+        window.onload = () => { 
+            renderMenu(); 
+            updateScore(); 
+            // Eğer icerik.js yüklenmezse hata vermemesi için kontrol
+            if(typeof curriculumData === 'undefined') {
+                alert("HATA: icerik.js dosyası bulunamadı! İki dosya aynı klasörde olmalı.");
+            }
         };
 
-        // --- MENÜ OLUŞTURMA ---
+        function updateScore() { document.getElementById('score-display').innerText = userScore + " Puan"; }
+
+        // --- MENÜ ---
         function renderMenu() {
             const container = document.getElementById('menu-container');
             container.innerHTML = "";
-
-            curriculumData.forEach((subject, idx) => {
-                // Ana Başlık Butonu
+            curriculumData.forEach(subject => {
                 let btn = document.createElement('button');
                 btn.className = 'main-subject';
                 btn.innerText = subject.subject;
-                btn.onclick = function() {
-                    this.classList.toggle("active");
-                    let panel = this.nextElementSibling;
-                    panel.style.display = panel.style.display === "block" ? "none" : "block";
+                btn.onclick = function() { 
+                    let next = this.nextElementSibling; 
+                    next.style.display = next.style.display === 'none' ? 'block' : 'none'; 
                 };
                 container.appendChild(btn);
 
-                // Alt Başlıklar Paneli
                 let panel = document.createElement('div');
-                panel.className = 'sub-topic-container';
-                
-                subject.lessons.forEach(lesson => {
-                    let subBtn = document.createElement('button');
-                    subBtn.className = 'sub-topic';
-                    subBtn.innerText = lesson.title;
-                    
-                    if (userState.completedLessons.includes(lesson.id)) {
-                        subBtn.classList.add('completed');
-                    }
-
-                    subBtn.onclick = () => loadLesson(lesson, subBtn);
-                    panel.appendChild(subBtn);
+                panel.style.display = 'none'; // Başlangıçta kapalı olsun
+                subject.lessons.forEach(l => {
+                    let sub = document.createElement('button');
+                    sub.className = 'sub-topic';
+                    sub.innerText = l.title;
+                    if(completed.includes(l.id)) sub.classList.add('completed');
+                    sub.onclick = () => startLesson(l, sub);
+                    panel.appendChild(sub);
                 });
                 container.appendChild(panel);
             });
         }
 
-        // --- DERS YÜKLEME ---
-        function loadLesson(lesson, btnElement) {
-            // Menü aktiflik temizle
+        function startLesson(lesson, btn) {
             document.querySelectorAll('.sub-topic').forEach(b => b.classList.remove('active-lesson'));
-            btnElement.classList.add('active-lesson');
-
+            btn.classList.add('active-lesson');
             currentLesson = lesson;
-            currentStep = 0;
-            
-            // İçerik dolu mu kontrolü (Boş şablonlar için)
-            if(!currentLesson.content.text) {
-                currentLesson.content = {
-                    text: "Bu dersin içeriği henüz hazırlanıyor.",
-                    image: "", video: "", activityType: "text", quiz: []
-                };
-            }
-
+            step = 0;
             renderStep();
-            updateControls();
         }
 
-        // --- ADIM DEĞİŞTİRME ---
         function changeStep(dir) {
-            currentStep += dir;
+            step += dir;
             renderStep();
-            updateControls();
         }
 
-        function updateControls() {
-            document.getElementById('btn-prev').disabled = currentStep === 0;
-            // Son adımda buton metni değişsin
-            let nextBtn = document.getElementById('btn-next');
-            if (currentStep === 4) {
-                nextBtn.innerText = "Dersi Bitir";
-                // Eğer test çözülmediyse veya ders zaten bitmişse duruma göre disabled yapılabilir
-            } else {
-                nextBtn.innerText = "İleri";
-                nextBtn.disabled = false;
-            }
-        }
-
-        // --- İÇERİK RENDERLAMA ---
+        // --- İÇERİK GÖSTERİMİ ---
         function renderStep() {
-            const contentDiv = document.getElementById('dynamic-content');
-            const title = document.getElementById('lesson-title');
-            title.innerText = currentLesson.title;
+            const content = document.getElementById('dynamic-content');
+            document.getElementById('lesson-title').innerText = currentLesson.title;
             
-            // İlerleme Noktaları
-            for(let i=0; i<5; i++) {
-                let dot = document.getElementById(`dot-${i}`);
-                if(i === currentStep) dot.classList.add('active');
-                else dot.classList.remove('active');
+            // Adım Göstergeleri
+            for(let i=0; i<=5; i++) {
+                let el = document.getElementById(`s-${i}`);
+                if(el) {
+                    if(i === step) el.classList.add('active');
+                    else el.classList.remove('active');
+                }
             }
 
-            synth.cancel(); // Önceki sesi durdur
+            // Buton Kontrolü
+            document.getElementById('btn-prev').disabled = step === 0;
+            let nextBtn = document.getElementById('btn-next');
+            nextBtn.innerText = step === 5 ? "Dersi Bitir" : "İleri";
+            nextBtn.disabled = false;
 
-            switch(currentStep) {
+            synth.cancel(); // Sesi durdur
+
+            // İÇERİK SWITCH
+            switch(step) {
                 case 0: // METİN
-                    contentDiv.innerHTML = `<div style="padding:20px; font-size:1.4em;">${currentLesson.content.text}</div>`;
+                    content.innerHTML = `<span class="section-note">Ders Notları dinleniyor...</span>
+                                         <div style="font-size:1.3em; padding:10px;">${currentLesson.content.text}</div>`;
                     let u = new SpeechSynthesisUtterance(currentLesson.content.text);
                     u.lang = 'tr-TR';
                     synth.speak(u);
                     break;
-                
-                case 1: // RESİM
-                    let imgUrl = currentLesson.content.image || "https://via.placeholder.com/600x350?text=Gorsel+Yok";
-                    contentDiv.innerHTML = `<img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/600x350?text=Yuklenemedi'">`;
+
+                case 1: // RESİMLER (Çoklu)
+                    let imgs = currentLesson.content.images;
+                    let imgHtml = `<span class="section-note">Konu ile ilgili görselleri inceleyiniz (Yana kaydırın):</span><div class="image-gallery">`;
+                    if(imgs && imgs.length > 0) {
+                        imgs.forEach(url => { imgHtml += `<img src="${url}">`; });
+                    } else {
+                        imgHtml += `<p>Görsel bulunamadı.</p>`;
+                    }
+                    imgHtml += `</div>`;
+                    content.innerHTML = imgHtml;
                     break;
 
                 case 2: // VİDEO
+                    content.innerHTML = `<span class="section-note">Konu anlatım videosu:</span>`;
                     if(currentLesson.content.video) {
-                        contentDiv.innerHTML = `<iframe src="${currentLesson.content.video}" allowfullscreen></iframe>`;
+                        content.innerHTML += `<iframe src="${currentLesson.content.video}" style="width:100%; height:350px; border:none; border-radius:8px;" allowfullscreen onerror="this.style.display='none'"></iframe>
+                        <p style="font-size:0.8em; text-align:center;">Video açılmıyorsa <a href="${currentLesson.content.video}" target="_blank">buraya tıklayın</a>.</p>`;
                     } else {
-                        contentDiv.innerHTML = `<div class="error-msg">Bu ders için video bulunmamaktadır.</div>`;
+                        content.innerHTML += `<p>Video yok.</p>`;
                     }
                     break;
 
-                case 3: // ETKİNLİK (ÇİZİM)
-                    if(currentLesson.content.activityType === 'draw') {
-                        contentDiv.innerHTML = `
-                            <div style="text-align:center;">
-                                <p><strong>Görev:</strong> ${currentLesson.content.activityText}</p>
-                                <canvas id="drawing-canvas" width="500" height="300"></canvas>
-                                <div class="canvas-tools">
-                                    <button onclick="clearCanvas()">Temizle</button>
-                                </div>
-                            </div>
-                        `;
-                        initCanvas();
-                    } else {
-                        contentDiv.innerHTML = `<p>Etkinlik: Lütfen konuyla ilgili notlarınızı defterinize yazın.</p>`;
-                    }
-                    break;
-
-                case 4: // TEST
-                    if(currentLesson.content.quiz.length > 0) {
-                        let quizHTML = `<h3>Değerlendirme Sınavı</h3>`;
-                        currentLesson.content.quiz.forEach((q, idx) => {
-                            quizHTML += `<div class="quiz-question">
-                                <p><strong>${idx+1}. ${q.q}</strong></p>
-                                ${q.opts.map((opt, oIdx) => 
-                                    `<button class="quiz-opt" onclick="checkQuiz(this, ${oIdx}, ${q.ans})">${opt}</button>`
-                                ).join('')}
-                            </div>`;
+                case 3: // ÖRNEKLER (YENİ)
+                    let exHtml = `<span class="section-note">Konu ile ilgili örnekler:</span>`;
+                    if(currentLesson.content.examples && currentLesson.content.examples.length > 0) {
+                        currentLesson.content.examples.forEach(ex => {
+                            exHtml += `<div class="example-box">${ex}</div>`;
                         });
-                        contentDiv.innerHTML = quizHTML;
-                        
-                        // Bitirme butonu davranışı
-                        document.getElementById('btn-next').onclick = completeLesson;
                     } else {
-                        contentDiv.innerHTML = `<p>Bu ders için test bulunmamaktadır. Tamamlamak için butona basın.</p>`;
-                        document.getElementById('btn-next').onclick = completeLesson;
+                        exHtml += `<p>Örnek bulunmamaktadır.</p>`;
                     }
+                    content.innerHTML = exHtml;
+                    break;
+
+                case 4: // ETKİNLİK (iPAD ÇİZİM FİXLİ)
+                    content.innerHTML = `<span class="section-note">Etkinlik Zamanı:</span>
+                        <p><strong>${currentLesson.content.activityText}</strong></p>
+                        <canvas id="drawing-canvas" width="600" height="300"></canvas>
+                        <div style="text-align:center; margin-top:5px;"><button onclick="clearCanvas()">Temizle</button></div>`;
+                    setupCanvas();
+                    break;
+
+                case 5: // SINAV (Çoklu Soru)
+                    let qHtml = `<span class="section-note">Değerlendirme Sınavı (${currentLesson.content.quiz.length} Soru):</span>`;
+                    currentLesson.content.quiz.forEach((q, i) => {
+                        qHtml += `<div class="quiz-q"><p><strong>${i+1}. ${q.q}</strong></p>`;
+                        q.opts.forEach((opt, oIdx) => {
+                            qHtml += `<button class="quiz-opt" onclick="checkAnswer(this, ${oIdx}, ${q.ans})">${opt}</button>`;
+                        });
+                        qHtml += `</div>`;
+                    });
+                    content.innerHTML = qHtml;
+                    nextBtn.onclick = finishLesson;
                     break;
             }
         }
 
-        // --- ÇİZİM FONKSİYONLARI ---
-        function initCanvas() {
+        // --- ÇİZİM SİSTEMİ (iPAD UYUMLU) ---
+        function setupCanvas() {
             const canvas = document.getElementById('drawing-canvas');
             drawCtx = canvas.getContext('2d');
-            drawCtx.lineWidth = 3;
-            drawCtx.lineCap = 'round';
-            drawCtx.strokeStyle = '#000';
+            drawCtx.lineWidth = 3; drawCtx.strokeStyle = "#000"; drawCtx.lineCap = "round";
 
+            // Mouse Olayları
             canvas.addEventListener('mousedown', startDraw);
             canvas.addEventListener('mousemove', draw);
             canvas.addEventListener('mouseup', stopDraw);
-            canvas.addEventListener('mouseleave', stopDraw);
+            
+            // Touch (iPad) Olayları
+            canvas.addEventListener('touchstart', (e) => { 
+                e.preventDefault(); // Sayfanın kaymasını engelle
+                let touch = e.touches[0];
+                let mouseEvent = new MouseEvent("mousedown", { clientX: touch.clientX, clientY: touch.clientY });
+                canvas.dispatchEvent(mouseEvent);
+            }, {passive: false});
+
+            canvas.addEventListener('touchend', () => {
+                let mouseEvent = new MouseEvent("mouseup", {});
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                let touch = e.touches[0];
+                let mouseEvent = new MouseEvent("mousemove", { clientX: touch.clientX, clientY: touch.clientY });
+                canvas.dispatchEvent(mouseEvent);
+            }, {passive: false});
         }
 
-        function startDraw(e) {
-            isDrawing = true;
-            draw(e);
-        }
+        function startDraw(e) { isDrawing = true; draw(e); }
+        function stopDraw() { isDrawing = false; drawCtx.beginPath(); }
         function draw(e) {
             if(!isDrawing) return;
             const rect = e.target.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
             drawCtx.lineTo(x, y);
             drawCtx.stroke();
             drawCtx.beginPath();
             drawCtx.moveTo(x, y);
         }
-        function stopDraw() {
-            isDrawing = false;
-            drawCtx.beginPath();
-        }
-        function clearCanvas() {
-            const canvas = document.getElementById('drawing-canvas');
-            drawCtx.clearRect(0, 0, canvas.width, canvas.height);
+        function clearCanvas() { 
+            const c = document.getElementById('drawing-canvas'); 
+            c.getContext('2d').clearRect(0, 0, c.width, c.height); 
         }
 
-        // --- TEST KONTROL ---
-        window.checkQuiz = function(btn, selected, correct) {
-            // Butonun olduğu sorudaki diğer butonları devre dışı bırak
-            let parent = btn.parentElement;
-            let buttons = parent.getElementsByClassName('quiz-opt');
-            for(let b of buttons) b.disabled = true;
+        // --- SINAV KONTROL ---
+        window.checkAnswer = function(btn, sel, cor) {
+            let p = btn.parentElement;
+            let btns = p.getElementsByClassName('quiz-opt');
+            for(let b of btns) b.disabled = true; // Şıkları kilitle
+            if(sel === cor) btn.classList.add('correct');
+            else btn.classList.add('wrong');
+        }
 
-            if(selected === correct) {
-                btn.classList.add('correct');
+        function finishLesson() {
+            if(!completed.includes(currentLesson.id)) {
+                userScore += currentLesson.points;
+                completed.push(currentLesson.id);
+                localStorage.setItem('v3_score', userScore);
+                localStorage.setItem('v3_completed', JSON.stringify(completed));
+                updateScore();
+                renderMenu(); // Yıldız işaretini eklemek için
+                alert("Ders tamamlandı! Puan eklendi.");
             } else {
-                btn.classList.add('wrong');
+                alert("Ders zaten tamamlanmış.");
             }
-        }
-
-        // --- DERS TAMAMLAMA ---
-        function completeLesson() {
-            if (!userState.completedLessons.includes(currentLesson.id)) {
-                // İlk defa tamamlanıyor
-                userState.completedLessons.push(currentLesson.id);
-                userState.score += currentLesson.points;
-                
-                // Kaydet
-                localStorage.setItem('schoolScore', userState.score);
-                localStorage.setItem('schoolCompleted', JSON.stringify(userState.completedLessons));
-                
-                updateScoreUI();
-                alert(`Tebrikler! Dersi tamamladın ve ${currentLesson.points} puan kazandın.`);
-                
-                // Menüyü güncelle (tik işareti için)
-                renderMenu();
-            } else {
-                alert("Bu dersi daha önce tamamladınız.");
-            }
-            
-            // Menüye dön veya sıfırla
-            document.getElementById('dynamic-content').innerHTML = "<h3>Ders Bitti.</h3><p>Sol menüden yeni bir ders seçebilirsiniz.</p>";
-            document.getElementById('btn-prev').disabled = true;
-            document.getElementById('btn-next').disabled = true;
-        }
-
-        function updateScoreUI() {
-            document.getElementById('score-display').innerText = userState.score + " Puan";
+            renderMenu();
         }
 
     </script>
