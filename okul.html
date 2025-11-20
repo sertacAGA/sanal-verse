@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanal Okul V4 - Tam Sürüm</title>
+    <title>Sanal Okul V5 - Final</title>
     
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     
@@ -208,7 +208,7 @@
             });
         }
 
-        // --- DERS BAŞLATMA (TEKRAR MODU DÜZELTİLDİ) ---
+        // --- DERS BAŞLATMA ---
         function startLesson(lesson, btn) {
             // Aktif butonu boya
             document.querySelectorAll('.sub-topic').forEach(b => b.classList.remove('active-lesson'));
@@ -250,6 +250,7 @@
                 if(completedLessons.includes(currentLesson.id)) {
                     nextBtn.innerText = "Menüye Dön";
                     nextBtn.className = "btn btn-prev"; // Yeşil değil gri olsun
+                    nextBtn.disabled = false; // Kilidi aç
                     nextBtn.onclick = () => {
                         contentDiv.innerHTML = "<div style='text-align:center; margin-top:50px;'><h3>Ders Tekrarlandı.</h3><p>Başka bir ders seçebilirsiniz.</p></div>";
                         nextBtn.disabled = true;
@@ -259,12 +260,14 @@
                     // İlk defa bitiyorsa:
                     nextBtn.innerText = "Dersi Bitir ve Puan Al";
                     nextBtn.className = "btn btn-finish"; // Yeşil buton
+                    nextBtn.disabled = false; // Kilidi aç
                     nextBtn.onclick = finishLesson;
                 }
             } else {
-                // Ara adımlar
+                // Ara adımlar (0-4)
                 nextBtn.innerText = "İleri";
                 nextBtn.className = "btn btn-next";
+                nextBtn.disabled = false; // <--- DÜZELTME BURADA: Kilit mutlaka açılmalı
                 nextBtn.onclick = () => changeStep(1);
             }
 
