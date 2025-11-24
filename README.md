@@ -1,3 +1,77 @@
+# 🎓 Sanal Sınıf: İnsansız Eğitim Platformu (V5)
+
+![Project Status](https://img.shields.io/badge/Status-Active-success)
+![Technology](https://img.shields.io/badge/Tech-HTML%20%7C%20JS%20%7C%20A--Frame-blue)
+![Platform](https://img.shields.io/badge/Platform-Web%20%7C%20Mobile%20%7C%20Tablet-orange)
+
+**Sanal Sınıf**, öğrencilerin öğretmen gözetimi olmadan kendi hızlarında ders çalışabilecekleri, 3 boyutlu bir sınıf ortamı sunan web tabanlı bir eğitim platformudur. A-Frame teknolojisi ile tarayıcı üzerinde çalışan bu sistem; metin okuma (TTS), interaktif çizim etkinlikleri, video dersler ve puanlı sınav sistemiyle donatılmıştır.
+
+---
+
+## 🌟 Öne Çıkan Özellikler
+
+### 🏫 3D Sınıf Atmosferi
+- **A-Frame** altyapısı ile tarayıcı tabanlı 3D sınıf ortamı.
+- Kullanıcı arayüzü (UI), sınıfın içindeki "Akıllı Tahta" üzerine entegre edilmiştir.
+
+### 📚 Modüler Ders Sistemi
+- **6 Ana Branş:** Matematik, Fen, Edebiyat, Resim, Müzik, Kimya.
+- **Dinamik İçerik:** Dersler harici bir JavaScript dosyasından (`icerik.js`) çekilir, kolayca yeni ders eklenebilir.
+- **Adım Adım Öğrenme:** Konu Anlatımı -> Görsel Galeri -> Video -> Örnekler -> Etkinlik -> Sınav.
+
+### 🎮 Oyunlaştırma ve Puanlama
+- **Başarı Puanı:** Çözülen testlerdeki başarı oranına göre puan kazanılır.
+- **Kalıcı İlerleme:** Tarayıcı kapansa bile kazanılan puanlar ve tamamlanan dersler (`Local Storage` sayesinde) korunur.
+- **Tekrar Modu:** Tamamlanan dersler tekrar incelenebilir.
+
+### 🎨 İnteraktif Araçlar
+- **Sesli Anlatım (TTS):** Ders notları otomatik olarak Türkçe seslendirilir.
+- **Çizim Tahtası (Canvas):** Hem PC (Mouse) hem de Tablet/iPad (Dokunmatik) uyumlu çizim alanı.
+- **Görsel Galeri:** Kaydırılabilir konu görselleri.
+
+---
+
+## 🚀 Kurulum ve Çalıştırma
+
+Bu proje herhangi bir sunucu kurulumu veya veritabanı gerektirmez.
+
+1.  Bu repoyu bilgisayarınıza indirin (Clone veya Download ZIP).
+2.  Klasör içindeki `index.html` ve `icerik.js` dosyalarının yan yana olduğundan emin olun.
+3.  `index.html` dosyasına çift tıklayın ve tarayıcınızda açın.
+4.  Hepsi bu kadar! 🎉
+
+> **Not:** Sesli okuma (TTS) özelliklerinin sorunsuz çalışması için modern tarayıcılar (Chrome, Edge, Safari) önerilir.
+
+---
+
+## 📂 Proje Yapısı
+
+- **`index.html`**: Uygulamanın beyni. 3D sahne, kullanıcı arayüzü, puanlama mantığı ve etkileşim kodlarını içerir.
+- **`icerik.js`**: Uygulamanın veritabanı. Tüm ders metinleri, resim linkleri, videolar ve sınav soruları bu dosyada JSON formatında tutulur.
+
+### İçerik Nasıl Eklenir?
+`icerik.js` dosyasını açarak `curriculumData` dizisine yeni bir obje ekleyerek kolayca yeni ders oluşturabilirsiniz:
+
+```javascript
+{
+    id: "yeniDers1",
+    title: "Ders Başlığı",
+    points: 100,
+    content: {
+        text: "Ders içeriği...",
+        images: ["resim.jpg"],
+        video: "video_linki",
+        activityType: "draw",
+        activityText: "Çizim görevi...",
+        quiz: [{ q: "Soru?", opts: ["A", "B"], ans: 0 }]
+    }
+}
+
+The Android version of the application is available on the Google Play Store: https://play.google.com/store/apps/details?id=com.crownbros.sanalverse
+
+The internet version of the application (WebGL) can be accessed at this link: https://sertacaga.itch.io/sanalverse
+
+
 ![alt text](https://sertacaga.github.io/SanalVerse/Ekran-1.png)
 
 TÜRKÇE
@@ -35,41 +109,5 @@ Uygulamanın internet versiyonu (WebGL) bu linkten ulaşılabilir: https://serta
 Uygulamanın Android versiyonu Google Play Store'da yer almaktadır: https://play.google.com/store/apps/details?id=com.crownbros.sanalverse
 
 ![alt text](https://sertacaga.github.io/SanalVerse/Ekran-2.jpg)
-
-ENGLISH
-----------------------------------------------------------------------
-Hello. It is an application where you can make online multiplayer class and conference meetings with the Virtual Verse application.
-
-The features in the application are listed below;
-
-There is a name entry field on the login screen. The name here is activated when the application is entered. There are roles for avatar selection; adult, child. Players who connect to the room as adults can change the content. Players who choose children cannot change the content.
-
-There are models for avatar selection in the second panel. After the model is selected, the room selection screen appears. Classroom, Conference Hall, Workshop and Office are on the room screen. There is a button called "Open Rooms" to see the rooms opened in the game.
-
-After the room selection is made, players can use the multimedia systems in the rooms they have entered. There is a button to turn on and off voice communication in the user interface of each room. The necessary buttons for the multimedia system in the room are located in the rooms.
-
-There is an exit button in each room to return to the main menu. The button required for the player to sit on the chairs in the rooms is activated when they get close to the chair.
-
-The server system is prepared using the free Photon Engine 2 Multiplayer system. The free version of Photon Voice was used for voice communication. The free version of Photon Chat was used for chatting. (Currently inactive!)
-
-A maximum of 16 people can join each room.
-
-In the classroom type room; there is a screen where you can draw. There are Pen and Eraser buttons on the interface. You can draw on the screen with these buttons, and then this drawing can be transferred to other players with the share drawing button.
-
-In the office type room; there is a screen where you can show a picture slide. The pictures on the screen can be changed by the players with the "Upload Presentation" button. There are also buttons to play the slide transitions forward or backward.
-
-In the Conference Hall type room; 5 videos that we have provided the connection over the internet can be played. There are buttons on the interface for the start and stop commands on the video screen.
-
-Note: Video synchronization has not yet been done for players who enter the class later. After the video is stopped, it starts the video again.
-
-In the workshop type room; 3D objects can be presented to other players after being uploaded as objects and skins. 3D objects appear on the base. There are forward and back buttons to change 3D objects.
-
-There are chairs in the classrooms and the chairs have a seating system. The content that appears when the application is opened is hosted on github. The user can call an image, video or 3D object from another server as desired.
-
-The internet version of the application (WebGL) can be accessed from this link: https://sertacaga.itch.io/sanalverse
-
-The Android version of the application is available on the Google Play Store: https://play.google.com/store/apps/details?id=com.crownbros.sanalverse
-
-The internet version of the application (WebGL) can be accessed at this link: https://sertacaga.itch.io/sanalverse
 
 ![alt text](https://sertacaga.github.io/SanalVerse/Ekran-3.png)
