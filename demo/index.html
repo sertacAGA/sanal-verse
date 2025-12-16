@@ -3,21 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanal Verse - Yatay Mod</title>
+    <title>Sanal Verse - Prototip V2</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="game-container">
         
+        <div id="settings-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h2>AYARLAR</h2>
+                <div class="setting-item">
+                    <span>Ses Düzeyi</span>
+                    <input type="range" min="0" max="100" value="80">
+                </div>
+                <div class="setting-item">
+                    <span>Müzik</span>
+                    <input type="checkbox" checked>
+                </div>
+                <button class="btn secondary" onclick="toggleSettings()">KAPAT</button>
+            </div>
+        </div>
+
         <div id="scene-start" class="scene active">
             <div class="content-wrapper">
                 <div class="logo-area">
-                    <div class="logo-icon">🪐</div> <h1>SANAL<br>VERSE</h1>
+                    <div class="logo-icon">🪐</div>
+                    <h1>SANAL<br>VERSE</h1>
                 </div>
                 <div class="button-group">
                     <button class="btn primary" onclick="goToScene('scene-login')">OYUNA BAŞLA</button>
-                    <button class="btn secondary">AYARLAR</button>
+                    <button class="btn secondary" onclick="toggleSettings()">AYARLAR</button>
                 </div>
             </div>
         </div>
@@ -25,7 +41,7 @@
         <div id="scene-login" class="scene">
             <h2>KİMLİK OLUŞTUR</h2>
             <div class="login-form">
-                <input type="text" id="username" placeholder="Kullanıcı Adı Giriniz" autocomplete="off">
+                <input type="text" id="username" placeholder="İsminizi Yazın" autocomplete="off">
                 
                 <div class="role-selection">
                     <label class="radio-card">
@@ -48,7 +64,7 @@
             <div class="avatar-wrapper">
                 <button class="arrow-btn">❮</button>
                 <div class="avatar-preview">
-                    <div id="avatar-visual">🧔</div>
+                    <div id="avatar-visual">👨</div>
                 </div>
                 <button class="arrow-btn">❯</button>
             </div>
@@ -64,7 +80,6 @@
         <div id="scene-menu" class="scene">
             <div class="menu-header">
                 <h3>Hoşgeldin, <span id="display-name">Oyuncu</span></h3>
-                <p>Nereye gitmek istersin?</p>
             </div>
 
             <div class="card-container">
@@ -72,11 +87,11 @@
                     <div class="card-icon">✈️</div>
                     <span>SEYAHAT ET</span>
                 </div>
-                <div class="menu-card" onclick="alert('Evim modülü yapım aşamasında.')">
+                <div class="menu-card" onclick="goToRoom('Ev.jpg', 'EVİM')">
                     <div class="card-icon">🏠</div>
                     <span>EVİM</span>
                 </div>
-                <div class="menu-card" onclick="alert('Açık odalar yakında.')">
+                <div class="menu-card" onclick="goToRoom('Acik_odalar.jpg', 'AÇIK ODALAR')">
                     <div class="card-icon">🚪</div>
                     <span>AÇIK ODALAR</span>
                 </div>
@@ -84,22 +99,22 @@
         </div>
 
         <div id="scene-map" class="scene full-screen">
-            <img src="IMG_1392.jpg" alt="Şehir Haritası" class="map-bg">
-            
-            <button class="back-btn" onclick="goToScene('scene-menu')">🔙 MENÜYE DÖN</button>
+            <img src="IMG_1392.jpg" alt="Şehir Haritası" class="bg-image">
+            <button class="back-btn" onclick="goToScene('scene-menu')">🔙 MENÜ</button>
 
-            <div class="hotspot school" onclick="enterBuilding('Okul')">
-                <span class="label">OKUL</span>
-            </div>
-            <div class="hotspot cafe" onclick="enterBuilding('Cafe')">
-                <span class="label">CAFE</span>
-            </div>
-            <div class="hotspot home" onclick="enterBuilding('Ev')">
-                <span class="label">EV</span>
-            </div>
-            <div class="hotspot work" onclick="enterBuilding('İş Yeri')">
-                <span class="label">İŞ YERİ</span>
-            </div>
+            <div class="hotspot school" onclick="goToRoom('Okul.jpg', 'OKUL')"><span class="label">OKUL</span></div>
+            <div class="hotspot cafe" onclick="goToRoom('Cafe.jpg', 'CAFE')"><span class="label">CAFE</span></div>
+            <div class="hotspot home" onclick="goToRoom('Ev.jpg', 'EV')"><span class="label">EV</span></div>
+            <div class="hotspot work" onclick="goToRoom('Ofis.jpg', 'İŞ YERİ')"><span class="label">İŞ YERİ</span></div>
+            <div class="hotspot workshop" onclick="goToRoom('Atolye.jpg', 'ATÖLYE')"><span class="label">ATÖLYE</span></div>
+        </div>
+
+        <div id="scene-room-view" class="scene full-screen">
+            <img id="room-bg" src="" alt="Oda" class="bg-image">
+            
+            <button id="room-back-btn" class="back-btn" onclick="goBackFromRoom()">🔙 GERİ DÖN</button>
+
+            <div class="room-title-badge" id="room-title">ODA ADI</div>
         </div>
 
     </div>
