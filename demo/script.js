@@ -1,41 +1,35 @@
 // OYUNCU VERİLERİ
 let playerData = {
     username: "",
-    role: "Yetişkin",
+    role: "Yetişkin", // Varsayılan
     gender: "male"
 };
 
-// SAHNE DEĞİŞTİRME FONKSİYONU
-function goToScene(sceneId) {
-    // 1. Tüm sahnelerden 'active' sınıfını kaldır
-    const scenes = document.querySelectorAll('.scene');
-    scenes.forEach(scene => {
-        scene.classList.remove('active');
-    });
+// Son kalınan yeri hatırlamak için (Map mi yoksa Dashboard mu?)
+let lastMenu = 'scene-menu'; 
 
-    // 2. İstenen sahneye 'active' sınıfını ekle
-    const targetScene = document.getElementById(sceneId);
-    if (targetScene) {
-        targetScene.classList.add('active');
-    }
+// SAHNE DEĞİŞTİRME
+function goToScene(sceneId) {
+    document.querySelectorAll('.scene').forEach(scene => scene.classList.remove('active'));
+    document.getElementById(sceneId).classList.add('active');
 }
 
-// GİRİŞ KONTROLÜ
+// AYARLAR MENÜSÜ AÇ/KAPA
+function toggleSettings() {
+    const modal = document.getElementById('settings-modal');
+    modal.classList.toggle('open');
+}
+
+// GİRİŞ KONTROLÜ VE ROL MANTIĞI
 function validateAndGo(nextSceneId) {
     const nameInput = document.getElementById('username');
-    const name = nameInput.value.trim();
-
-    if (name === "") {
+    if (nameInput.value.trim() === "") {
         alert("Lütfen isminizi giriniz!");
-        // Input kutusunu salla (CSS efekti eklenebilir, şimdilik odaklayalım)
-        nameInput.focus();
         return;
     }
+    playerData.username = nameInput.value;
 
-    // İsmi kaydet
-    playerData.username = name;
-
-    // Seçili rolü bul ve kaydet
+    // Rolü Al
     const roleOptions = document.getElementsByName('role');
     for (const option of roleOptions) {
         if (option.checked) {
@@ -44,37 +38,67 @@ function validateAndGo(nextSceneId) {
         }
     }
 
-    console.log("Kayıt Başarılı:", playerData);
-    
-    // İsmi menüye yazdır
+    // İsmi Ekrana Yaz
     document.getElementById('display-name').innerText = playerData.username;
-    
+
+    // ROL'E GÖRE AVATAR SIFIRLA
+    // Eğer çocuk seçildiyse avatar görselleri çocuk olmalı, yetişkinse yetişkin.
+    updateAvatarVisual();
+
     goToScene(nextSceneId);
 }
 
-// CİNSİYET SEÇİMİ
+// CİNSİYET SEÇİMİ VE GÖRSEL GÜNCELLEME
 function selectGender(gender, btn) {
     playerData.gender = gender;
-
-    // Tüm butonların seçili halini kaldır
     document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
-    
-    // Tıklanan butonu seçili yap
     btn.classList.add('selected');
+    updateAvatarVisual();
+}
 
-    // Görseli güncelle
+function updateAvatarVisual() {
     const avatarVisual = document.getElementById('avatar-visual');
-    if (gender === 'male') {
-        avatarVisual.innerText = "🧔";
+    
+    if (playerData.role === "Çocuk") {
+        // ÇOCUK İKONLARI
+        if (playerData.gender === 'male') {
+            avatarVisual.innerText = "👦"; // Çocuk Erkek
+        } else {
+            avatarVisual.innerText = "👧"; // Çocuk Kız
+        }
     } else {
-        avatarVisual.innerText = "👩";
+        // YETİŞKİN İKONLARI
+        if (playerData.gender === 'male') {
+            avatarVisual.innerText = "👨"; // Yetişkin Erkek
+        } else {
+            avatarVisual.innerText = "👩"; // Yetişkin Kadın
+        }
     }
 }
 
-// BİNAYA GİRİŞ (HARİTA)
-function enterBuilding(buildingName) {
-    // Burada ileride yeni sayfa açabilir veya modal gösterebiliriz
-    // Şimdilik sadece uyarı verelim
-    const message = `Sayın ${playerData.role}, ${buildingName} binasına giriş yapılıyor...`;
-    alert(message);
+// ODA / BİNA GİRİŞ FONKSİYONU
+// Bu fonksiyon hem menüden hem haritadan çalışır.
+function goToRoom(imageFile, roomName) {
+    const bgImage = document.getElementById('room-bg');
+    const title = document.getElementById('room-title');
+    
+    // Hangi menüden gelindiğini kaydet (Geri dönünce oraya gitsin)
+    // Eğer şu an haritadaysak (scene-map aktifse) geri dönüş haritaya olsun
+    if(document.getElementById('scene-map').classList.contains('active')) {
+        lastMenu = 'scene-map';
+    } else {
+        lastMenu = 'scene-menu';
+    }
+
+    // Odanın resmini ve adını ayarla
+    bgImage.src = imageFile;
+    title.innerText = roomName;
+
+    // Odayı göster
+    goToScene('scene-room-view');
+}
+
+// ODADAN ÇIKIŞ
+function goBackFromRoom() {
+    goToScene(lastMenu);
 }
