@@ -1,141 +1,153 @@
-// --- DATA ---
-
-const parts = {
-  body: [
-    { id: "light", name:"Hafif Gövde", desc:"Hızlı ama zayıf", speed: 30, damage: 5 },
-    { id: "heavy", name:"Ağır Gövde", desc:"Yavaş ama güçlü", speed: 10, damage: 25 }
-  ],
-  weapon: [
-    { id: "laser", name:"Lazer", desc:"Hızlı atış", damage: 15 },
-    { id: "cannon", name:"Top", desc:"Yüksek hasar", damage: 30 }
-  ]
+// ---------------- STATE ----------------
+let gameState = {
+  step: "career",
+  career: null,
+  vehicle: null,
+  parts: []
 };
 
-const modules = [
-  { id: "target_ai", name: "Hedef AI", desc: "Otomatik hedef bulur" },
-  { id: "nav_ai", name: "Navigasyon AI", desc: "En kısa yolu bulur" }
+// ---------------- DATA ----------------
+const vehicles = [
+  { id: "drone_fast", name: "Hızlı Drone", desc: "Çok hızlı, düşük hasar" },
+  { id: "drone_power", name: "Saldırı Drone", desc: "Yüksek hasar" }
 ];
 
-let currentProject = {
-  parts: [],
-  modules: []
-};
+const parts = [
+  { id: "engine", name:"Motor", desc:"Hız artırır", speed: 20 },
+  { id: "gun", name:"Silah", desc:"Hasar artırır", damage: 25 },
+  { id: "armor", name:"Zırh", desc:"Dayanıklılık", damage: 5 }
+];
 
-// --- NAVIGATION ---
-function loadPage(page) {
-  if (page === "career") renderCareer();
-  if (page === "project") renderProject();
+// ---------------- STEP UI ----------------
+function updateSteps() {
+  document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+
+  const el = document.getElementById("step-" + gameState.step);
+  if (el) el.classList.add("active");
 }
 
-// --- CAREER ---
+// ---------------- NAV ----------------
+function loadStep(step) {
+  gameState.step = step;
+  updateSteps();
+
+  if (step === "career") renderCareer();
+  if (step === "vehicle") renderVehicle();
+  if (step === "build") renderBuild();
+  if (step === "test") renderTest();
+}
+
+// ---------------- STEP 1: CAREER ----------------
 function renderCareer() {
   document.getElementById("content").innerHTML = `
-    <h2>Kariyer</h2>
+    <h2>Kariyer Seç</h2>
+
     <div class="card">
-      <p>🔧 Mühendis: Yeni parçalar açar</p>
-      <p>🎨 Tasarımcı: Görsel ve modül açar</p>
-      <p>💻 Yazılımcı: AI modülleri açar</p>
+      <div class="part" onclick="selectCareer('engineer')">
+        <h3>🔧 Mühendis</h3>
+        <p>Drone üret ve geliştir</p>
+      </div>
     </div>
   `;
 }
 
-// --- PROJECT MAIN ---
-function renderProject() {
+function selectCareer(career) {
+  gameState.career = career;
+  loadStep("vehicle");
+}
+
+// ---------------- STEP 2: VEHICLE ----------------
+function renderVehicle() {
   document.getElementById("content").innerHTML = `
-    <h2>Proje Editörü</h2>
+    <h2>Drone Seç</h2>
+
+    <div class="parts">
+      ${vehicles.map(v => `
+        <div class="part" onclick="selectVehicle('${v.id}')">
+          <h3>${v.name}</h3>
+          <p>${v.desc}</p>
+        </div>
+      `).join("")}
+    </div>
+
+    <button onclick="loadStep('career')">← Geri</button>
+  `;
+}
+
+function selectVehicle(id) {
+  gameState.vehicle = vehicles.find(v => v.id === id);
+  loadStep("build");
+}
+
+// ---------------- STEP 3: BUILD ----------------
+function renderBuild() {
+  document.getElementById("content").innerHTML = `
+    <h2>Drone Oluştur</h2>
 
     <div class="card">
-      <h3>Parçalar</h3>
-      <button onclick="openPartSelect()">+ Parça Ekle</button>
-      <div id="partList"></div>
+      <h3>Parça Ekle</h3>
+      <div class="parts">
+        ${parts.map(p => `
+          <div class="part" onclick="addPart('${p.id}')">
+            <h4>${p.name}</h4>
+            <p>${p.desc}</p>
+          </div>
+        `).join("")}
+      </div>
     </div>
 
     <div class="card">
-      <h3>Modüller</h3>
-      <button onclick="openModuleSelect()">+ Modül Ekle</button>
-      <div id="moduleList"></div>
+      <h3>Eklenen Parçalar</h3>
+      <div id="partList"></div>
     </div>
 
     <div class="card">
       <h3>Performans</h3>
       <div id="stats"></div>
     </div>
+
+    <button onclick="loadStep('vehicle')">← Geri</button>
+    <button onclick="loadStep('test')">🚀 TEST ET</button>
   `;
 
-  updateLists();
-  updateStats();
+  updateBuild();
 }
 
-// --- PART SELECT ---
-function openPartSelect() {
-  document.getElementById("content").innerHTML = `
-    <h2>Parça Seç</h2>
-
-    ${Object.keys(parts).map(type => `
-      <h3>${type.toUpperCase()}</h3>
-      <div class="parts">
-        ${parts[type].map(p => `
-          <div class="part" onclick="addPart('${type}','${p.id}')">
-            <h4>${p.name}</h4>
-            <p>${p.desc}</p>
-          </div>
-        `).join("")}
-      </div>
-    `).join("")}
-
-    <button onclick="renderProject()">← Geri</button>
-  `;
+function addPart(id) {
+  const part = parts.find(p => p.id === id);
+  gameState.parts.push(part);
+  renderBuild();
 }
 
-// --- MODULE SELECT ---
-function openModuleSelect() {
-  document.getElementById("content").innerHTML = `
-    <h2>Modül Seç</h2>
-
-    <div class="parts">
-      ${modules.map(m => `
-        <div class="part" onclick="addModule('${m.id}')">
-          <h4>${m.name}</h4>
-          <p>${m.desc}</p>
-        </div>
-      `).join("")}
-    </div>
-
-    <button onclick="renderProject()">← Geri</button>
-  `;
-}
-
-// --- ADD FUNCTIONS ---
-function addPart(type, id) {
-  const part = parts[type].find(p => p.id === id);
-  currentProject.parts.push(part);
-  renderProject();
-}
-
-function addModule(id) {
-  const mod = modules.find(m => m.id === id);
-  currentProject.modules.push(mod);
-  renderProject();
-}
-
-// --- UPDATE LISTS ---
-function updateLists() {
+// ---------------- BUILD UPDATE ----------------
+function updateBuild() {
+  // Parça listesi
   document.getElementById("partList").innerHTML =
-    currentProject.parts.length
-      ? currentProject.parts.map(p => `<p>🔧 ${p.name}</p>`).join("")
+    gameState.parts.length
+      ? gameState.parts.map(p => `<p>🔧 ${p.name}</p>`).join("")
       : "<p>Henüz parça eklenmedi</p>";
 
-  document.getElementById("moduleList").innerHTML =
-    currentProject.modules.length
-      ? currentProject.modules.map(m => `<p>🧠 ${m.name}</p>`).join("")
-      : "<p>Henüz modül eklenmedi</p>";
+  // Stat hesapla
+  const stats = calculateStats();
+
+  document.getElementById("stats").innerHTML = `
+    <p>Hız</p>
+    <div class="bar">
+      <div class="fill" style="width:${stats.speed}%"></div>
+    </div>
+
+    <p>Hasar</p>
+    <div class="bar">
+      <div class="fill" style="width:${stats.damage}%"></div>
+    </div>
+  `;
 }
 
-// --- CALCULATE ---
+// ---------------- CALC ----------------
 function calculateStats() {
   let stats = { speed: 0, damage: 0 };
 
-  currentProject.parts.forEach(p => {
+  gameState.parts.forEach(p => {
     stats.speed += p.speed || 0;
     stats.damage += p.damage || 0;
   });
@@ -143,18 +155,38 @@ function calculateStats() {
   return stats;
 }
 
-// --- UPDATE STATS ---
-function updateStats() {
+// ---------------- STEP 4: TEST ----------------
+function renderTest() {
   const stats = calculateStats();
 
-  document.getElementById("stats").innerHTML = `
-    <p>Hız</p>
-    <div class="bar"><div class="fill" style="width:${stats.speed}%"></div></div>
+  // Basit skor formülü
+  const score = (stats.speed * 2) + (stats.damage * 3);
 
-    <p>Hasar</p>
-    <div class="bar"><div class="fill" style="width:${stats.damage}%"></div></div>
+  document.getElementById("content").innerHTML = `
+    <h2>Test Sonucu</h2>
+
+    <div class="card">
+      <p>🚀 Hız: ${stats.speed}</p>
+      <p>💥 Hasar: ${stats.damage}</p>
+      <h3>Skor: ${score}</h3>
+    </div>
+
+    <button onclick="loadStep('build')">← Geri</button>
+    <button onclick="restart()">🔄 Yeniden Başla</button>
   `;
 }
 
-// --- INIT ---
-loadPage("project");
+// ---------------- RESET ----------------
+function restart() {
+  gameState = {
+    step: "career",
+    career: null,
+    vehicle: null,
+    parts: []
+  };
+
+  loadStep("career");
+}
+
+// ---------------- INIT ----------------
+loadStep("career");
