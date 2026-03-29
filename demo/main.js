@@ -190,3 +190,136 @@ function restart() {
 
 // ---------------- INIT ----------------
 loadStep("career");
+
+// ---------------- MINI GAME ----------------
+
+let canvas, ctx;
+let player, bullets, targets;
+let score = 0;
+let timeLeft = 30;
+let gameInterval;
+
+// TEST EKRANINI DEĞİŞTİR
+function renderTest() {
+  document.getElementById("content").innerHTML = `
+    <h2>Test Alanı</h2>
+    <p>SPACE ile ateş et</p>
+    <p>Süre: <span id="time">30</span></p>
+    <p>Skor: <span id="score">0</span></p>
+    <button onclick="loadStep('build')">← Geri</button>
+  `;
+
+  startGame();
+}
+
+// OYUN BAŞLAT
+function startGame() {
+  canvas = document.getElementById("gameCanvas");
+  ctx = canvas.getContext("2d");
+  canvas.style.display = "block";
+
+  const stats = calculateStats();
+
+  player = {
+    x: 50,
+    y: 200,
+    speed: 2 + stats.speed * 0.1
+  };
+
+  bullets = [];
+  targets = [];
+  score = 0;
+  timeLeft = 30;
+
+  spawnTargets();
+
+  document.addEventListener("keydown", shoot);
+
+  gameInterval = setInterval(updateGame, 1000/60);
+  setInterval(updateTimer, 1000);
+}
+
+// HEDEF OLUŞTUR
+function spawnTargets() {
+  setInterval(() => {
+    targets.push({
+      x: 600,
+      y: Math.random() * 350,
+      speed: 2
+    });
+  }, 1000);
+}
+
+// ATEŞ
+function shoot(e) {
+  if (e.code === "Space") {
+    bullets.push({
+      x: player.x,
+      y: player.y,
+      speed: 5
+    });
+  }
+}
+
+// TIMER
+function updateTimer() {
+  timeLeft--;
+  document.getElementById("time").innerText = timeLeft;
+
+  if (timeLeft <= 0) {
+    endGame();
+  }
+}
+
+// OYUN LOOP
+function updateGame() {
+  ctx.clearRect(0,0,600,400);
+
+  // PLAYER
+  ctx.fillStyle = "cyan";
+  ctx.fillRect(player.x, player.y, 20, 20);
+
+  // BULLETS
+  bullets.forEach(b => {
+    b.x += b.speed;
+    ctx.fillStyle = "yellow";
+    ctx.fillRect(b.x, b.y, 5, 5);
+  });
+
+  // TARGETS
+  targets.forEach(t => {
+    t.x -= t.speed;
+    ctx.fillStyle = "red";
+    ctx.fillRect(t.x, t.y, 20, 20);
+  });
+
+  // COLLISION
+  bullets.forEach((b, bi) => {
+    targets.forEach((t, ti) => {
+      if (
+        b.x < t.x + 20 &&
+        b.x + 5 > t.x &&
+        b.y < t.y + 20 &&
+        b.y + 5 > t.y
+      ) {
+        bullets.splice(bi,1);
+        targets.splice(ti,1);
+        score += 10;
+        document.getElementById("score").innerText = score;
+      }
+    });
+  });
+}
+
+// OYUN BİTİŞ
+function endGame() {
+  clearInterval(gameInterval);
+
+  document.getElementById("content").innerHTML = `
+    <h2>Oyun Bitti</h2>
+    <h3>Skor: ${score}</h3>
+    <button onclick="restart()">🔄 Yeniden Başla</button>
+  `;
+
+  canvas.style.display = "none";
+}
