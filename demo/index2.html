@@ -8,30 +8,31 @@
 body {
   margin:0;
   font-family: Arial;
-  display:flex;
   background:#0f172a;
   color:white;
 }
 
-#sidebar {
-  width:220px;
+#topbar {
   background:#020617;
-  padding:15px;
+  padding:10px;
+}
+
+.steps {
+  display:flex;
+  justify-content:space-around;
+}
+
+.step {
+  opacity:0.5;
+}
+
+.active {
+  opacity:1;
+  color:#22c55e;
 }
 
 #content {
-  flex:1;
   padding:20px;
-}
-
-button {
-  width:100%;
-  padding:10px;
-  margin:5px 0;
-  border:none;
-  cursor:pointer;
-  background:#1e293b;
-  color:white;
 }
 
 .card {
@@ -55,34 +56,30 @@ button {
   flex:1;
   min-width:120px;
   text-align:center;
-  transition:0.2s;
-}
-
-.part:hover {
-  background:#475569;
 }
 
 .bar {
   height:10px;
   background:#334155;
   border-radius:5px;
-  margin:5px 0;
 }
 
 .fill {
   height:10px;
   background:#22c55e;
-  border-radius:5px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="sidebar">
-  <h3>Menü</h3>
-  <button onclick="loadPage('career')">Kariyer</button>
-  <button onclick="loadPage('project')">Projeler</button>
+<div id="topbar">
+  <div class="steps">
+    <div id="step-career" class="step">Kariyer</div>
+    <div id="step-vehicle" class="step">Araç</div>
+    <div id="step-build" class="step">Parçalar</div>
+    <div id="step-test" class="step">Test</div>
+  </div>
 </div>
 
 <div id="content"></div>
