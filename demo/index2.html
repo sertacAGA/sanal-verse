@@ -1,16 +1,84 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Tekno Panel</title>
-  <style>
-    body { font-family: Arial; display: flex; margin: 0; }
-    #sidebar { width: 200px; background: #111; color: #fff; padding: 10px; }
-    #content { flex: 1; padding: 20px; }
-    button { margin: 5px 0; width: 100%; }
-    .card { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
-  </style>
+<meta charset="UTF-8">
+<title>Tekno Panel</title>
+
+<style>
+body {
+  margin:0;
+  font-family: Arial;
+  display:flex;
+  background:#0f172a;
+  color:white;
+}
+
+#sidebar {
+  width:220px;
+  background:#020617;
+  padding:15px;
+}
+
+#content {
+  flex:1;
+  padding:20px;
+}
+
+button {
+  width:100%;
+  padding:10px;
+  margin:5px 0;
+  border:none;
+  cursor:pointer;
+  background:#1e293b;
+  color:white;
+}
+
+.card {
+  background:#1e293b;
+  padding:15px;
+  margin-top:15px;
+  border-radius:10px;
+}
+
+.parts {
+  display:flex;
+  gap:10px;
+}
+
+.part {
+  background:#334155;
+  padding:10px;
+  border-radius:8px;
+  cursor:pointer;
+  flex:1;
+  text-align:center;
+  transition:0.2s;
+}
+
+.part:hover {
+  background:#475569;
+}
+
+.selected {
+  border:2px solid #22c55e;
+}
+
+.bar {
+  height:10px;
+  background:#334155;
+  border-radius:5px;
+  margin:5px 0;
+}
+
+.fill {
+  height:10px;
+  background:#22c55e;
+  border-radius:5px;
+}
+</style>
 </head>
+
 <body>
 
 <div id="sidebar">
