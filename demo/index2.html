@@ -44,6 +44,7 @@ button {
 .parts {
   display:flex;
   gap:10px;
+  flex-wrap:wrap;
 }
 
 .part {
@@ -52,16 +53,13 @@ button {
   border-radius:8px;
   cursor:pointer;
   flex:1;
+  min-width:120px;
   text-align:center;
   transition:0.2s;
 }
 
 .part:hover {
   background:#475569;
-}
-
-.selected {
-  border:2px solid #22c55e;
 }
 
 .bar {
@@ -84,7 +82,7 @@ button {
 <div id="sidebar">
   <h3>Menü</h3>
   <button onclick="loadPage('career')">Kariyer</button>
-  <button onclick="loadPage('project')">Proje</button>
+  <button onclick="loadPage('project')">Projeler</button>
 </div>
 
 <div id="content"></div>
