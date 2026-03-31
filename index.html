@@ -1,15 +1,124 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <title>Sanal Verse</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanal Verse - Prototip V2</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <img src="image/Ev.jpg" alt="Ev">
-    <img src="image/Acik_odalar.jpg" alt="Açık Odalar">
-    <img src="image/IMG_1392.jpg" alt="IMG_1392">
-    <img src="image/Okul.jpg" alt="Okul">
-    <img src="image/Cafe.jpg" alt="Cafe">
-    <img src="image/Ofis.jpg" alt="Ofis">
-    <img src="image/Atolye.jpg" alt="Atolye">
+
+    <div class="game-container">
+        
+        <div id="settings-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h2>AYARLAR</h2>
+                <div class="setting-item">
+                    <span>Ses Düzeyi</span>
+                    <input type="range" min="0" max="100" value="80">
+                </div>
+                <div class="setting-item">
+                    <span>Müzik</span>
+                    <input type="checkbox" checked>
+                </div>
+                <button class="btn secondary" onclick="toggleSettings()">KAPAT</button>
+            </div>
+        </div>
+
+        <div id="scene-start" class="scene active">
+            <div class="content-wrapper">
+                <div class="logo-area">
+                    <div class="logo-icon">🪐</div>
+                    <h1>SANAL<br>VERSE</h1>
+                </div>
+                <div class="button-group">
+                    <button class="btn primary" onclick="goToScene('scene-login')">OYUNA BAŞLA</button>
+                    <button class="btn secondary" onclick="toggleSettings()">AYARLAR</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="scene-login" class="scene">
+            <h2>KİMLİK OLUŞTUR</h2>
+            <div class="login-form">
+                <input type="text" id="username" placeholder="İsminizi Yazın" autocomplete="off">
+                
+                <div class="role-selection">
+                    <label class="radio-card">
+                        <input type="radio" name="role" value="Yetişkin" checked>
+                        <span class="role-box">👨‍💼 Yetişkin</span>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="role" value="Çocuk">
+                        <span class="role-box">🧒 Çocuk</span>
+                    </label>
+                </div>
+
+                <button class="btn primary" onclick="validateAndGo('scene-avatar')">DEVAM ET</button>
+            </div>
+        </div>
+
+        <div id="scene-avatar" class="scene">
+            <h2>AVATARINI SEÇ</h2>
+            
+            <div class="avatar-wrapper">
+                <button class="arrow-btn">❮</button>
+                <div class="avatar-preview">
+                    <div id="avatar-visual">👨</div>
+                </div>
+                <button class="arrow-btn">❯</button>
+            </div>
+
+            <div class="gender-controls">
+                <button class="gender-btn selected" onclick="selectGender('male', this)">ERKEK</button>
+                <button class="gender-btn" onclick="selectGender('female', this)">KADIN</button>
+            </div>
+
+            <button class="btn primary" style="margin-top: 20px;" onclick="goToScene('scene-menu')">SEÇİMİ ONAYLA</button>
+        </div>
+
+        <div id="scene-menu" class="scene">
+            <div class="menu-header">
+                <h3>Hoşgeldin, <span id="display-name">Oyuncu</span></h3>
+            </div>
+
+            <div class="card-container">
+                <div class="menu-card" onclick="goToScene('scene-map')">
+                    <div class="card-icon">✈️</div>
+                    <span>SEYAHAT ET</span>
+                </div>
+                <div class="menu-card" onclick="goToRoom('Ev.jpg', 'EVİM')">
+                    <div class="card-icon">🏠</div>
+                    <span>EVİM</span>
+                </div>
+                <div class="menu-card" onclick="goToRoom('Acik_odalar.jpg', 'AÇIK ODALAR')">
+                    <div class="card-icon">🚪</div>
+                    <span>AÇIK ODALAR</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="scene-map" class="scene full-screen">
+            <img src="IMG_1392.jpg" alt="Şehir Haritası" class="bg-image">
+            <button class="back-btn" onclick="goToScene('scene-menu')">🔙 MENÜ</button>
+
+            <div class="hotspot school" onclick="goToRoom('images/Okul.jpg', 'OKUL')"><span class="label">OKUL</span></div>
+            <div class="hotspot cafe" onclick="goToRoom('images/Cafe.jpg', 'CAFE')"><span class="label">CAFE</span></div>
+            <div class="hotspot home" onclick="goToRoom('images/Ev.jpg', 'EV')"><span class="label">EV</span></div>
+            <div class="hotspot work" onclick="goToRoom('images/Ofis.jpg', 'İŞ YERİ')"><span class="label">İŞ YERİ</span></div>
+            <div class="hotspot workshop" onclick="goToRoom('images/Atolye.jpg', 'ATÖLYE')"><span class="label">ATÖLYE</span></div>
+        </div>
+
+        <div id="scene-room-view" class="scene full-screen">
+            <img id="room-bg" src="" alt="Oda" class="bg-image">
+            
+            <button id="room-back-btn" class="back-btn" onclick="goBackFromRoom()">🔙 GERİ DÖN</button>
+
+            <div class="room-title-badge" id="room-title">ODA ADI</div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
