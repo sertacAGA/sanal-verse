@@ -1,7 +1,7 @@
 /* Ofis Teması ve Arka Plan */
 .ofis-theme {
     /* Arka plan resmini buraya ekleyebilirsin */
-    /* background-image: url('images/bg_ofis.jpg'); */
+    background-image: url('images/bg_ofis.jpg'); */
     background-color: #f0f4f8; /* Geçici renk */
     background-size: cover;
     color: #333;
