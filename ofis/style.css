@@ -1,196 +1,95 @@
-/* GENEL AYARLAR (Ana style.css'ten kopyalandı) */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    user-select: none;
-}
-
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-/* OFİS KONTEYNERİ (Tam Ekran) */
-.office-container {
-    width: 100vw;
-    height: 100vh;
-    background-color: #2c3e50; /* Arka plan resmi yoksa lacivert */
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* ARKA PLAN RESMİ */
-.bg-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.6; /* İçeriğin net görünmesi için hafif karartma */
-    z-index: 1;
-}
-
-/* ORTAK UI ELEMANLARI (Ana style.css'ten kopyalandı) */
-.back-btn {
-    position: absolute; top: 20px; left: 20px; z-index: 100;
-    background: rgba(0,0,0,0.8); color: white; border: none;
-    padding: 10px 20px; border-radius: 10px; cursor: pointer; border: 1px solid white;
-}
-
-.room-title-badge {
-    position: absolute; top: 20px; right: 20px; z-index: 100;
-    background: rgba(43, 50, 178, 0.9); color: white;
-    padding: 10px 20px; border-radius: 10px; font-weight: bold;
-    border: 2px solid white;
-}
-
-.btn {
-    padding: 10px 20px; border-radius: 50px; border: none;
-    font-size: 14px; font-weight: bold; cursor: pointer;
-    margin: 5px; transition: transform 0.1s;
-}
-.btn:active { transform: scale(0.95); }
-.primary { background: linear-gradient(to right, #6a11cb, #2575fc); color: white; }
-.secondary { background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); color: white; }
-
-/* SUNUM ALANI */
-.presentation-area {
-    position: relative;
-    z-index: 10;
-    width: 90%;
-    height: 80%;
-    display: flex;
-    gap: 30px;
-    margin-top: 50px; /* Başlıklar için boşluk */
-}
-
-/* PROJEKSİYON EKRANI */
-.projection-screen {
-    flex: 2; /* Daha geniş alan */
-    background-color: #000;
-    border: 10px solid #333;
-    border-radius: 10px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-
-.screen-content {
-    color: #fff;
-    text-align: center;
-    width: 90%;
-}
-
-.screen-content h3 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #00d2ff;
-}
-
-.project-drawing {
-    max-width: 100%;
-    max-height: 250px;
-    border: 2px solid #fff;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-
-.project-status {
-    font-size: 14px;
-    color: #aaa;
-}
-
-/* KONTROL PANELİ */
-.control-panel {
-    flex: 1; /* Daha dar alan */
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 20px;
+/* Ofis Teması ve Arka Plan */
+.ofis-theme {
+    /* Arka plan resmini buraya ekleyebilirsin */
+    /* background-image: url('images/bg_ofis.jpg'); */
+    background-color: #f0f4f8; /* Geçici renk */
+    background-size: cover;
     color: #333;
-    padding: 20px;
-    display: flex;
+}
+
+.ofis-theme .room-title-badge {
+    background: rgba(30, 40, 60, 0.9);
+}
+
+/* İçerik Düzenleme */
+.content-wrapper.vertical {
     flex-direction: column;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    gap: 20px;
+    width: 80%;
 }
 
-.panel-header {
-    text-align: center;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
+.ofis-theme h2, .ofis-theme p {
+    color: #1a1a2e;
 }
 
-.panel-header h2 { font-size: 20px; color: #2b32b2; }
-
-.panel-body {
-    flex: 1;
+/* Hazırlık Kartları (Lego Mantığı gibi) */
+.preparation-zones {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.step {
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    font-size: 14px;
-    border-left: 5px solid transparent;
-}
-
-.step.active {
-    background-color: #2575fc;
-    color: white;
-    border-left: 5px solid #00d2ff;
-    font-weight: bold;
-}
-
-.panel-stats {
-    margin: 20px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.stat-item {
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.progress-bar {
+    gap: 20px;
     width: 100%;
-    height: 8px;
-    background-color: #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 4px;
 }
 
-.progress {
-    height: 100%;
-    background: linear-gradient(to right, #00d2ff, #2575fc);
-}
-
-.progress-bar.energy .progress {
-    background: linear-gradient(to right, #ff9966, #ff5e62); /* Enerji için kırmızı renk */
-}
-
-.panel-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: auto; /* En alta yaslar */
-}
-
-.panel-buttons .btn {
+.prep-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
     flex: 1;
-    min-width: 0; /* Butonların daralmasını sağlar */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border: 2px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.prep-card:hover {
+    border-color: #2575fc;
+}
+
+.prep-card h3 {
+    margin-bottom: 15px;
+    color: #2b32b2;
+}
+
+.prep-card input, .prep-card select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+/* Sunum Düzeni */
+.presentation-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 90%;
+    height: 90%;
+}
+
+.juror-area {
+    text-align: center;
+}
+
+.juror-avatar {
+    font-size: 80px;
+    margin-bottom: 10px;
+}
+
+.dialogue-box {
+    background: white;
+    color: #333;
+    padding: 30px;
+    border-radius: 20px;
+    width: 100%;
+    min-height: 150px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
 }
