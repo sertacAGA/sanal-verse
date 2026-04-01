@@ -4,60 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sanal Verse - Ofis Sunumu</title>
+    <link rel="stylesheet" href="../style.css"> 
     <link rel="stylesheet" href="ofis_style.css">
 </head>
 <body>
 
-    <div class="office-container">
+    <div class="game-container ofis-theme">
         
-        <img src="../images/Ofis_bg.jpg" alt="Ofis" class="bg-image">
-
         <button class="back-btn" onclick="window.location.href='../index.html'">🔙 HARİTAYA DÖN</button>
 
-        <div class="room-title-badge">YATIRIMCI SUNUM ODASI</div>
+        <div class="room-title-badge">İŞ YERİ - SUNUM ODASI</div>
 
-        <div class="presentation-area">
-            
-            <div class="projection-screen">
-                <div class="screen-content">
-                    <h3>PROJE: HİBRİT GÖZLEM ARACI</h3>
-                    <img src="../images/Proje_taslak.png" alt="Proje Taslağı" class="project-drawing">
-                    <p class="project-status">DURUM: Prototip Aşaması</p>
-                </div>
-            </div>
-
-            <div class="control-panel">
-                <div class="panel-header">
-                    <h2>SUNUM AKIŞI</h2>
-                </div>
+        <div id="office-preparation" class="scene active">
+            <div class="content-wrapper vertical">
+                <h2>Sunum Hazırlığı</h2>
+                <p>Projenin hangi yönlerini vurgulamak istersin?</p>
                 
-                <div class="panel-body">
-                    <div class="step active">1. Proje Vizyonu</div>
-                    <div class="step">2. Teknik Özellikler</div>
-                    <div class="step">3. Bütçe ve Zamanlama</div>
-                    <div class="step">4. Soru-Cevap</div>
+                <div class="preparation-zones">
+                    <div class="prep-card">
+                        <h3>🔧 Teknik</h3>
+                        <input type="text" id="prep-tech" placeholder="Örn: Otonom Rover Sistemi">
+                    </div>
+                    <div class="prep-card">
+                        <h3>💡 İhtiyaç</h3>
+                        <input type="text" id="prep-need" placeholder="Örn: Arazi Erişilebilirlik">
+                    </div>
+                    <div class="prep-card">
+                        <h3>🎤 Tarz</h3>
+                        <select id="prep-style">
+                            <option value="profesyonel">Profesyonel & Resmi</option>
+                            <option value="heyecanli">Heyecanlı & Yenilikçi</option>
+                            <option value="duygusal">Duygusal & Toplumsal</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="panel-stats">
-                    <div class="stat-item">
-                        <span>Yatırımcı İlgisi</span>
-                        <div class="progress-bar"><div class="progress" style="width: 75%;"></div></div>
-                    </div>
-                    <div class="stat-item">
-                        <span>Kalan Enerji</span>
-                        <div class="progress-bar energy"><div class="progress" style="width: 40%;"></div></div>
-                    </div>
-                </div>
-
-                <div class="panel-buttons">
-                    <button class="btn primary">SONRAKİ SLAYT</button>
-                    <button class="btn secondary">YATIRIMCIYI İKNA ET</button>
-                </div>
+                <button class="btn primary" onclick="startPresentation()">SUNUMA BAŞLA</button>
             </div>
+        </div>
 
+        <div id="office-presentation" class="scene">
+            <div class="presentation-layout">
+                <div class="juror-area">
+                    <div class="juror-avatar">👤</div>
+                    <h3>Patron (veya Jüri)</h3>
+                </div>
+                <div class="dialogue-box">
+                    <p id="presentation-text">Sunum bekleniyor...</p>
+                </div>
+                <button id="next-slide-btn" class="btn primary disabled" onclick="nextSlide()" disabled>DEVAM ET</button>
+            </div>
         </div>
 
     </div>
 
+    <script src="ofis_script.js"></script>
 </body>
 </html>
