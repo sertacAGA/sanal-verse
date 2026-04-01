@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Tekno Panel</title>
+
+<style>
+body {
+  margin:0;
+  font-family: Arial;
+  background:#0f172a;
+  color:white;
+}
+
+#topbar {
+  background:#020617;
+  padding:10px;
+}
+
+.steps {
+  display:flex;
+  justify-content:space-around;
+}
+
+.step {
+  opacity:0.5;
+}
+
+.active {
+  opacity:1;
+  color:#22c55e;
+}
+
+#content {
+  padding:20px;
+}
+
+.card {
+  background:#1e293b;
+  padding:15px;
+  margin-top:15px;
+  border-radius:10px;
+}
+
+.parts {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.part {
+  background:#334155;
+  padding:10px;
+  border-radius:8px;
+  cursor:pointer;
+  flex:1;
+  min-width:120px;
+  text-align:center;
+}
+
+.bar {
+  height:10px;
+  background:#334155;
+  border-radius:5px;
+}
+
+.fill {
+  height:10px;
+  background:#22c55e;
+}
+</style>
+</head>
+
+<body>
+
+<div id="topbar">
+  <div class="steps">
+    <div id="step-career" class="step">Kariyer</div>
+    <div id="step-vehicle" class="step">Araç</div>
+    <div id="step-build" class="step">Parçalar</div>
+    <div id="step-test" class="step">Test</div>
+  </div>
+</div>
+
+<div id="content"></div>
+
+  <canvas id="gameCanvas" width="600" height="400" style="display:none; background:black;"></canvas>
+
+<script src="main.js"></script>
+</body>
+</html>
