@@ -7,24 +7,31 @@
     user-select: none;
 }
 
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* İstenmeyen kaydırma çubuklarını engeller */
+}
+
 body {
     background-color: #1a1a2e;
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
 }
 
+/* ANA OYUN ALANI (Tam Ekran Yapıldı) */
 .game-container {
-    width: 850px;
-    height: 480px;
+    width: 100vw;
+    height: 100vh;
     background: linear-gradient(to bottom right, #2b32b2, #1488cc);
-    border-radius: 20px;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 50px rgba(0,0,0,0.5);
-    border: 8px solid #333;
+    display: flex;
+    flex-direction: column;
+    /* Önceki köşelikler, gölgeler ve kenarlıklar tam ekran görünümü için kaldırıldı */
 }
 
 /* AYARLAR MODALI (POP-UP) */
@@ -60,6 +67,9 @@ body {
     display: none;
     width: 100%;
     height: 100%;
+    position: absolute; /* Sahnelerin üst üste tam oturması için */
+    top: 0;
+    left: 0;
     flex-direction: column;
     align-items: center;
     justify-content: center;
