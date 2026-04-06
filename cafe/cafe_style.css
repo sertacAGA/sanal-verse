@@ -1,0 +1,86 @@
+.cafe-theme {
+    background-image: url('./images/bg_cafe.jpg');
+    background-color: #3d2b1f; /* Ahşap rengi yedek */
+    background-size: cover;
+}
+
+/* Müzik Çalar */
+.jukebox {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    background: rgba(0,0,0,0.8);
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+    border: 2px solid #e67e22;
+}
+
+.controls button {
+    background: #e67e22;
+    border: none;
+    padding: 5px 10px;
+    margin: 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* İş Panosu */
+.job-board {
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    transform: translate(-50%, -50%);
+    background: #f4d03f;
+    width: 350px;
+    padding: 20px;
+    border: 5px solid #a04000;
+    box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
+}
+
+.job-card {
+    background: #fff;
+    margin: 10px 0;
+    padding: 10px;
+    border-left: 5px solid #2ecc71;
+}
+
+.job-card.medium { border-left-color: #3498db; }
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 5px;
+}
+
+.job-card button {
+    width: 100%;
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 5px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+/* Bildirim */
+.toast {
+    visibility: hidden;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 16px;
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+
+@keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+@keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
