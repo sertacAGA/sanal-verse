@@ -1,7 +1,7 @@
 /* Ev Teması ve Arka Plan */
 .ev-theme {
     background: none !important; 
-    background-image: url('images/bg_home.jpg'); /* Arkaplan resmin burada */
+    background-image: url('./images/bg_home.jpg'); /* Arkaplan resmin burada */
     background-color: #2c3e50; /* Resim yoksa yedek renk */
     background-size: cover;
     background-position: center;
