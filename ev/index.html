@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanal Verse - Evim</title>
+    <link rel="stylesheet" href="../style.css"> 
+    <link rel="stylesheet" href="ev_style.css">
+</head>
+<body>
+
+    <div class="game-container ev-theme">
+        
+        <button class="back-btn" onclick="window.location.href='../index.html'">🔙 HARİTAYA DÖN</button>
+
+        <div class="room-title-badge">EVİM - DİNLENME & PROFİL</div>
+
+        <div class="home-menu">
+            <button class="action-btn" onclick="openModal('profile-modal')">👤 Karakter Özellikleri</button>
+            <button class="action-btn" onclick="openModal('tv-modal')">📺 Televizyon İzle</button>
+            </div>
+
+        <div id="profile-modal" class="custom-modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="closeModal('profile-modal')">X</button>
+                <h2>Karakter Profili</h2>
+                <div class="stats-grid">
+                    <div class="stat-box"><span>Seviye:</span> <strong>3</strong></div>
+                    <div class="stat-box"><span>Para:</span> <strong>1250 ₺</strong></div>
+                    <div class="stat-box"><span>İtibar:</span> <strong>Çırak</strong></div>
+                </div>
+                <h3>Kazanılan Beceriler</h3>
+                <ul class="skills-list">
+                    <li>🔧 Temel Montaj Lisansı</li>
+                    <li>🎨 Başlangıç Tasarım Eğitimi</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="tv-modal" class="custom-modal">
+            <div class="modal-content tv-content">
+                <button class="close-btn" onclick="closeModal('tv-modal')">X</button>
+                <h2>Televizyon</h2>
+                <p>Eğitim videoları veya günün haberleri...</p>
+                <div class="video-container">
+                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/ScMzIvxBSi4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="ev_script.js"></script>
+</body>
+</html>
