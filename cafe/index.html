@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sanal Verse - Kasaba Kafesi</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="cafe_style.css">
+</head>
+<body>
+    <div class="game-container cafe-theme">
+        <button class="back-btn" onclick="window.location.href='../index.html'">🔙 HARİTAYA DÖN</button>
+
+        <div class="jukebox">
+            <div class="track-info">🎵 <span id="current-track">Çalan: -</span></div>
+            <div class="controls">
+                <button onclick="playMusic('jazz')">🎷 Jazz</button>
+                <button onclick="playMusic('lofi')">☕ Lofi</button>
+                <button onclick="stopMusic()">⏹ Durdur</button>
+            </div>
+            <audio id="bg-audio" loop></audio>
+        </div>
+
+        <div class="job-board">
+            <h2>📜 KASABA İŞ PANOSU</h2>
+            <div class="job-list">
+                <div class="job-card easy">
+                    <div class="job-header">Basit Tamirat <span>50 ₺</span></div>
+                    <p>Komşunun bozulan radyosunu Garaj'da tamir et.</p>
+                    <button onclick="acceptJob('Radyo Tamiri', 50)">İŞİ AL</button>
+                </div>
+                <div class="job-card medium">
+                    <div class="job-header">Afiş Tasarımı <span>150 ₺</span></div>
+                    <p>Festival için Atölye'de bir logo çiz ve Ofis'te teslim et.</p>
+                    <button onclick="acceptJob('Afiş Tasarımı', 150)">İŞİ AL</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast" class="toast">Görev kabul edildi!</div>
+    </div>
+
+    <script src="cafe_script.js"></script>
+</body>
+</html>
