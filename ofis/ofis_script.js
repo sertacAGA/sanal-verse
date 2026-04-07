@@ -1,55 +1,32 @@
-// --- OYUNCU VERİLERİ (localStorage üzerinden güvenli çekim) ---
 let playerName = localStorage.getItem('playerName') || "Oyuncu";
-let playerRole = localStorage.getItem('playerRole') || "Ziyaretçi";
-
+let playerRole = localStorage.getItem('playerRole') || "Yetişkin";
 let currentSlide = 0;
 let presentationData = [];
 
-// Sayfa yüklendiğinde karşılama metnini ayarla
 window.onload = () => {
     const welcomeText = document.getElementById('office-welcome');
-    if (welcomeText) {
-        welcomeText.innerText = `Hoş geldin ${playerName}, projen sunuma hazır mı?`;
-    }
+    if(welcomeText) welcomeText.innerText = `Hoş geldin ${playerName}, projen sunuma hazır mı?`;
 };
 
-// --- NAVİGASYON FONKSİYONLARI ---
-function goBackToMap() {
-    // Klasör yapısına göre ana haritaya (index.html) yönlendirir
-    window.location.href = '../index.html';
-}
+function goBackToMap() { window.location.href = '../index.html'; }
 
-// --- SUNUM MANTIĞI ---
 function startPresentation() {
-    // 1. Kullanıcı Girişlerini Yakala
-    const techInput = document.getElementById('prep-tech').value;
-    const needInput = document.getElementById('prep-need').value;
-    const styleInput = document.getElementById('prep-style').value;
+    // Bilgileri tam bu anda çekiyoruz
+    const tech = document.getElementById('prep-tech').value || 'Akıllı Sistemler';
+    const need = document.getElementById('prep-need').value || 'Hızlı Çözümler';
+    const style = document.getElementById('prep-style').value;
 
-    // Boş bırakılan yerler için varsayılan değerler ata
-    const tech = techInput || 'Yenilikçi Teknoloji';
-    const need = needInput || 'Toplumsal İhtiyaç';
-    const style = styleInput || 'Modern';
-
-    // 2. Dinamik Sunum Senaryosu Oluştur
     presentationData = [
-        `Merhaba, bugün sizlere yeni projemizi sunmaktan heyecan duyuyorum.`,
-        `Projemizin temel teknik odak noktası: ${tech}.`,
-        `Bu projenin kasabamızda çözüm bulacağı ana ihtiyaç: ${need}.`,
-        `Tasarım dili olarak belirlediğimiz tarz: ${style}.`,
-        `Sunumumuzu dinlediğiniz için teşekkürler. Değerlendirmenizi bekliyoruz!`
+        `Merhaba, bugün sizlere projemizi sunmaktan heyecan duyuyorum.`,
+        `Projemizin teknik odak noktası tamamen "${tech}" üzerine kurulu.`,
+        `Bu sayede kasabamızdaki "${need}" sorununa kökten bir çözüm sunuyoruz.`,
+        `Görsel dilimizde "${style}" tarzını seçerek fark yaratmayı hedefledik.`,
+        `Sunumumu dinlediğiniz için teşekkürler. Kararınızı bekliyorum!`
     ];
 
-    // 3. Görünür Sahneleri Değiştir (Active Class Yönetimi)
-    const prepScene = document.getElementById('office-preparation');
-    const presScene = document.getElementById('office-presentation');
+    document.getElementById('office-preparation').classList.remove('active');
+    document.getElementById('office-presentation').classList.add('active');
 
-    if (prepScene && presScene) {
-        prepScene.classList.remove('active');
-        presScene.classList.add('active');
-    }
-
-    // 4. İlk Slaytı Ekrana Bas
     currentSlide = 0;
     showSlide();
 }
@@ -57,22 +34,15 @@ function startPresentation() {
 function showSlide() {
     const textElement = document.getElementById('presentation-text');
     const btnElement = document.getElementById('next-slide-btn');
-
-    if (textElement && btnElement) {
+    
+    if(textElement) {
         textElement.innerText = presentationData[currentSlide];
-        
-        // Son slaytta buton metnini değiştir
-        if (currentSlide === presentationData.length - 1) {
-            btnElement.innerText = "SONUCU GÖR 📊";
-        } else {
-            btnElement.innerText = "SONRAKİ SAYFA ➔";
-        }
+        btnElement.innerText = (currentSlide === presentationData.length - 1) ? "SONUCU GÖR" : "SONRAKİ SAYFA ➔";
     }
 }
 
 function nextSlide() {
     currentSlide++;
-    
     if (currentSlide < presentationData.length) {
         showSlide();
     } else {
@@ -80,20 +50,18 @@ function nextSlide() {
     }
 }
 
-// finishPresentation fonksiyonu içindeki ilgili alan:
 function finishPresentation() {
     const textElement = document.getElementById('presentation-text');
     const btnElement = document.getElementById('next-slide-btn');
 
-    // CSS'deki dialogue-box yapısını koruyarak sonucu gösteriyoruz
     textElement.innerHTML = `
-        <div style="text-align: center; width: 100%;">
-            <h3 style="color: #2575fc; margin-bottom: 5px;">Sunum Başarıyla Tamamlandı!</h3>
-            <div style="font-size: 2.5em; font-weight: bold; color: #f1c40f;">🏆 85 / 100</div>
-            <p style="font-size: 16px; margin-top: 10px;">Tebrikler ${playerName}, harika bir ${playerRole} vizyonu!</p>
+        <div style="width:100%">
+            <h3 style="color:#2575fc">Sunum Tamamlandı!</h3>
+            <div style="font-size:3rem; margin:15px 0; color:#f1c40f">85 / 100</div>
+            <p>Tebrikler ${playerName}, bir ${playerRole} olarak harika iş çıkardın!</p>
         </div>
     `;
     
-    btnElement.innerText = 'HARİTAYA DÖN VE DEVAM ET';
-    btnElement.onclick = () => goBackToMap();
+    btnElement.innerText = 'HARİTAYA DÖN';
+    btnElement.onclick = goBackToMap;
 }
