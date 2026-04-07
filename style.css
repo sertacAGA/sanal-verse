@@ -1,208 +1,235 @@
-/* GENEL AYARLAR */
+/* GENEL SIFIRLAMA */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
     width: 100%;
     height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden; 
+    overflow: hidden;
+    background-color: #1a1a2e;
 }
 
 body {
-    background-color: #1a1a2e;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* ANA OYUN ALANI */
+/* ANA KAPLAYICI */
 .game-container {
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(to bottom right, #2b32b2, #1488cc);
+    background: linear-gradient(135deg, #2b32b2, #1488cc);
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
 }
 
-/* AYARLAR MODALI (POP-UP) */
+/* AYARLAR MODALI */
 .modal-overlay {
     display: none;
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
-    z-index: 999;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
     justify-content: center;
     align-items: center;
     animation: fadeIn 0.3s;
 }
 .modal-overlay.open { display: flex; }
+
 .modal-content {
     background: white;
     color: #333;
-    padding: 30px;
-    border-radius: 20px;
-    width: 300px;
+    padding: 40px 30px;
+    border-radius: 25px;
+    width: 320px;
     text-align: center;
-    position: relative; /* İçindeki X butonu için gerekli */
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
+
+.close-x {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+}
+
 .setting-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 15px 0;
+    margin: 20px 0;
     font-weight: bold;
 }
 
-/* SAHNELER */
+.modal-logout-btn {
+    background: none;
+    border: none;
+    color: #ff4757;
+    cursor: pointer;
+    margin-top: 25px;
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+/* SAHNE YAPISI */
 .scene {
     display: none;
     width: 100%;
     height: 100%;
-    position: absolute; 
-    top: 0;
-    left: 0;
+    position: absolute;
+    top: 0; left: 0;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     color: white;
-    animation: fadeIn 0.4s ease-out;
 }
-.scene.active { display: flex; }
+.scene.active { display: flex; animation: fadeIn 0.5s ease; }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.98); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* LOGO VE GİRİŞ DİZİLİMİ */
+.content-wrapper {
+    display: flex;
+    flex-direction: column; /* Üst üste diz */
+    align-items: center;
+    gap: 40px;
+}
+
+.logo-area { text-align: center; }
+.logo-icon { font-size: 100px; margin-bottom: 10px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2)); }
+.logo-area h1 { font-size: 50px; line-height: 0.9; letter-spacing: 2px; }
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 /* BUTONLAR */
 .btn {
-    padding: 12px 30px;
+    padding: 15px 40px;
     border-radius: 50px;
     border: none;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
-    min-width: 200px;
-    margin: 10px;
-    transition: transform 0.1s;
+    min-width: 240px;
+    transition: all 0.2s;
 }
-.btn:active { transform: scale(0.95); }
-.primary { background: linear-gradient(to right, #6a11cb, #2575fc); color: white; }
-.secondary { background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); color: white; }
+.btn:active { transform: scale(0.96); }
+.primary { background: white; color: #2b32b2; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+.secondary { background: rgba(255,255,255,0.15); border: 2px solid white; color: white; }
 
-/* LOGO VE GİRİŞ */
-.content-wrapper { display: flex; align-items: center; gap: 50px; }
-.logo-area h1 { font-size: 60px; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-.logo-icon { font-size: 80px; }
+/* FORM VE SEÇİMLER */
 input[type="text"] {
-    padding: 15px; border-radius: 10px; border: none; width: 300px;
-    text-align: center; font-size: 18px; margin-bottom: 20px;
+    padding: 18px; border-radius: 15px; border: none; width: 320px;
+    text-align: center; font-size: 20px; margin-bottom: 25px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
-/* ROL SEÇİMİ */
-.role-selection { display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; }
+.role-selection { display: flex; gap: 15px; margin-bottom: 30px; }
 .role-box {
-    padding: 15px 30px; background: rgba(255,255,255,0.1);
+    padding: 15px 25px; background: rgba(255,255,255,0.1);
     border: 2px solid rgba(255,255,255,0.3); border-radius: 15px; cursor: pointer;
 }
-input[type="radio"]:checked + .role-box {
-    background: #fff; color: #2b32b2; transform: translateY(-5px);
-}
+input[type="radio"]:checked + .role-box { background: white; color: #2b32b2; font-weight: bold; }
 input[type="radio"] { display: none; }
 
 /* AVATAR */
 .avatar-preview {
-    width: 150px; height: 150px; background: rgba(255,255,255,0.2);
+    width: 160px; height: 160px; background: rgba(255,255,255,0.15);
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 80px; border: 4px solid rgba(255,255,255,0.5); margin: 0 20px;
+    font-size: 90px; border: 5px solid white; margin: 0 20px;
 }
-.avatar-wrapper { display: flex; align-items: center; margin-bottom: 20px; }
-.arrow-btn { background: none; border: none; color: white; font-size: 40px; cursor: pointer; }
+.avatar-wrapper { display: flex; align-items: center; margin-bottom: 30px; }
+.arrow-btn { background: none; border: none; color: white; font-size: 50px; cursor: pointer; padding: 10px; }
+
 .gender-controls button {
-    margin: 0 10px; padding: 10px 20px; border-radius: 20px;
-    border: 2px solid white; background: transparent; color: white; cursor: pointer;
+    margin: 0 10px; padding: 12px 25px; border-radius: 25px;
+    border: 2px solid white; background: transparent; color: white; font-weight: bold;
 }
 .gender-controls button.selected { background: white; color: #2b32b2; }
 
 /* MENÜ KARTLARI */
-.card-container { display: flex; gap: 30px; margin-top: 30px; }
+.card-container { display: flex; gap: 20px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
 .menu-card {
-    width: 140px; height: 160px; background: rgba(255,255,255,0.9);
+    width: 130px; height: 150px; background: white;
     border-radius: 20px; display: flex; flex-direction: column;
     align-items: center; justify-content: center; color: #333;
-    cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: transform 0.2s;
+    cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
 }
-.menu-card:hover { transform: translateY(-10px); }
-.card-icon { font-size: 50px; margin-bottom: 10px; }
-.menu-card span { font-weight: bold; font-size: 14px; }
+.menu-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+.card-icon { font-size: 55px; margin-bottom: 5px; }
+.menu-card span { font-weight: 800; font-size: 13px; color: #2b32b2; }
 
-/* TAM EKRAN VE HARİTA */
-.full-screen { padding: 0; position: relative; }
-.bg-image { width: 100%; height: 100%; object-fit: cover; } 
-
-.back-btn {
-    position: absolute; top: 20px; left: 20px; z-index: 100;
-    background: rgba(0,0,0,0.8); color: white; border: none;
-    padding: 10px 20px; border-radius: 10px; cursor: pointer; border: 1px solid white;
+.logout-link {
+    margin-top: 50px; background: none; border: none; color: rgba(255,255,255,0.7);
+    cursor: pointer; text-decoration: underline; font-size: 14px;
 }
 
-/* HARİTA NOKTALARI (Tablet Uyumlu Görünür Alanlar) */
-#scene-map {
-    position: relative; /* İçindeki noktaların hizalanması için şart */
+/* HARİTA VE HOTSPOTLAR */
+.full-screen { position: relative; padding: 0; }
+.bg-image { width: 100%; height: 100%; object-fit: cover; }
+
+.top-controls {
+    position: absolute; top: 20px; left: 20px; right: 20px;
+    display: flex; justify-content: space-between; pointer-events: none;
+    z-index: 100;
 }
+
+.back-btn-static, .exit-btn-static {
+    pointer-events: auto; background: rgba(0,0,0,0.8); color: white;
+    border: 2px solid white; padding: 12px 20px; border-radius: 12px;
+    cursor: pointer; font-weight: bold; font-size: 14px;
+}
+.exit-btn-static { border-color: #ff4757; color: #ff4757; }
 
 .hotspot {
-    position: absolute; 
-    width: 70px; /* Tıklanabilir geniş alan */
-    height: 70px;
-    background-color: rgba(255, 255, 255, 0.2); /* Hafif beyaz şeffaf daire */
-    border: 2px solid rgba(255, 255, 255, 0.5); /* Etrafında çerçeve */
-    border-radius: 50%; /* Tam yuvarlak yapar */
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    cursor: pointer;
-    transform: translate(-50%, -50%); /* Merkezden hizalar (Kritik) */
-    transition: all 0.3s ease;
+    position: absolute; width: 80px; height: 80px;
+    background: rgba(255, 255, 255, 0.2); border: 3px solid white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transform: translate(-50%, -50%); transition: all 0.3s;
 }
-
-.hotspot:hover { 
-    background-color: rgba(43, 50, 178, 0.8); /* Üzerine gelince belirginleşir */
-    transform: translate(-50%, -50%) scale(1.1); /* Hafif büyür */
-}
+.hotspot:hover { background: rgba(43, 50, 178, 0.8); transform: translate(-50%, -50%) scale(1.15); }
 
 .hotspot .label {
-    position: absolute;
-    bottom: -30px; /* Yazıyı dairenin hemen altına atar */
-    background: rgba(0,0,0,0.8); 
-    color: white; 
-    padding: 4px 8px;
-    border-radius: 5px; 
-    font-size: 12px; 
-    pointer-events: none; /* Yazıya tıklanmayı engeller */
+    position: absolute; bottom: -35px; background: #2b32b2; color: white;
+    padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: bold;
+    pointer-events: none; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* Koordinatlar (Merkez noktaya göre % olarak ayarlandı) */
-.hotspot.school { top: 16%; left: 20%; }
-.hotspot.cafe { top: 16%; left: 75%; }
-.hotspot.home { top: 80%; left: 40%; }
-.hotspot.work { top: 75%; left: 80%; }
-.hotspot.workshop { top: 70%; left: 17%; }
+/* HARİTA KOORDİNATLARI */
+.school { top: 20%; left: 20%; }
+.cafe { top: 18%; left: 78%; }
+.home { top: 75%; left: 45%; }
+.work { top: 70%; left: 82%; }
+.workshop { top: 65%; left: 18%; }
 
 /* ODA BAŞLIĞI */
 .room-title-badge {
     position: absolute; top: 20px; right: 20px;
-    background: rgba(43, 50, 178, 0.9); color: white;
-    padding: 10px 20px; border-radius: 10px; font-weight: bold;
-    border: 2px solid white;
+    background: #2b32b2; color: white; padding: 12px 25px;
+    border-radius: 15px; font-weight: bold; border: 2px solid white;
+}
+
+.back-btn {
+    position: absolute; top: 20px; left: 20px;
+    background: rgba(0,0,0,0.8); color: white; padding: 12px 20px;
+    border-radius: 12px; border: 2px solid white; cursor: pointer;
 }
