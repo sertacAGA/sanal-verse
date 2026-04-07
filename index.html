@@ -10,18 +10,25 @@
 
     <div class="game-container">
         
-<div id="settings-modal" class="modal-overlay">
-    <div class="modal-content" style="position: relative;">
-        <span onclick="toggleSettings()" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer;">✖</span>
-        
-        <h2>AYARLAR</h2>
-        <div class="setting-item">
-            <span>Ses Düzeyi</span>
-            <input type="range" min="0" max="100" value="80">
+        <div id="settings-modal" class="modal-overlay">
+            <div class="modal-content">
+                <span onclick="toggleSettings()" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #666;">✖</span>
+                
+                <h2>AYARLAR</h2>
+                <div class="setting-item">
+                    <span>Ses Düzeyi</span>
+                    <input type="range" min="0" max="100" value="80">
+                </div>
+                <div class="setting-item">
+                    <span>Müzik</span>
+                    <input type="checkbox" checked>
+                </div>
+                <button class="btn secondary" style="min-width: 100px; margin-top: 10px;" onclick="toggleSettings()">KAPAT</button>
+                <br>
+                <button onclick="logout()" style="background: none; border: none; color: #ff4757; cursor: pointer; margin-top: 20px; text-decoration: underline;">Oturumu Kapat / Sıfırla</button>
+            </div>
         </div>
-        </div>
-</div>
-        
+
         <div id="scene-start" class="scene active">
             <div class="content-wrapper">
                 <div class="logo-area">
@@ -39,7 +46,6 @@
             <h2>KİMLİK OLUŞTUR</h2>
             <div class="login-form">
                 <input type="text" id="username" placeholder="İsminizi Yazın" autocomplete="off">
-                
                 <div class="role-selection">
                     <label class="radio-card">
                         <input type="radio" name="role" value="Yetişkin" checked>
@@ -50,14 +56,12 @@
                         <span class="role-box">🧒 Çocuk</span>
                     </label>
                 </div>
-
                 <button class="btn primary" onclick="validateAndGo('scene-avatar')">DEVAM ET</button>
             </div>
         </div>
 
         <div id="scene-avatar" class="scene">
             <h2>AVATARINI SEÇ</h2>
-            
             <div class="avatar-wrapper">
                 <button class="arrow-btn">❮</button>
                 <div class="avatar-preview">
@@ -65,12 +69,10 @@
                 </div>
                 <button class="arrow-btn">❯</button>
             </div>
-
             <div class="gender-controls">
                 <button class="gender-btn selected" onclick="selectGender('male', this)">ERKEK</button>
                 <button class="gender-btn" onclick="selectGender('female', this)">KADIN</button>
             </div>
-
             <button class="btn primary" style="margin-top: 20px;" onclick="goToScene('scene-menu')">SEÇİMİ ONAYLA</button>
         </div>
 
@@ -78,7 +80,6 @@
             <div class="menu-header">
                 <h3>Hoşgeldin, <span id="display-name">Oyuncu</span></h3>
             </div>
-
             <div class="card-container">
                 <div class="menu-card" onclick="goToScene('scene-map')">
                     <div class="card-icon">✈️</div>
@@ -94,7 +95,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div id="scene-map" class="scene full-screen">
             <img src="images/IMG_1392.jpg" alt="Şehir Haritası" class="bg-image">
             <button class="back-btn" onclick="goToScene('scene-menu')">🔙 MENÜ</button>
@@ -108,9 +109,7 @@
 
         <div id="scene-room-view" class="scene full-screen">
             <img id="room-bg" src="" alt="Oda" class="bg-image">
-            
             <button id="room-back-btn" class="back-btn" onclick="goBackFromRoom()">🔙 GERİ DÖN</button>
-
             <div class="room-title-badge" id="room-title">ODA ADI</div>
         </div>
 
