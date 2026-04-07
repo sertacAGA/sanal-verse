@@ -1,95 +1,107 @@
-/* Ofis Teması ve Arka Plan */
+/* Temel Sıfırlama */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body, html {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+}
+
 .ofis-theme {
-    /* Arka plan resmini buraya ekleyebilirsin */
-    background-image: url('images/bg_ofis.jpg'); */
-    background-color: #f0f4f8; /* Geçici renk */
-    background-size: cover;
-    color: #333;
+    background-color: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.ofis-theme .room-title-badge {
-    background: rgba(30, 40, 60, 0.9);
-}
-
-/* İçerik Düzenleme */
-.content-wrapper.vertical {
+.game-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
     flex-direction: column;
-    gap: 20px;
-    width: 80%;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
-.ofis-theme h2, .ofis-theme p {
-    color: #1a1a2e;
+/* Sahne Yönetimi */
+.scene {
+    display: none; /* Varsayılan gizli */
+    width: 90%;
+    max-width: 900px;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.5s ease;
 }
 
-/* Hazırlık Kartları (Lego Mantığı gibi) */
+.scene.active {
+    display: flex; /* Sadece aktif olanı göster */
+}
+
+/* Hazırlık Kartları */
 .preparation-zones {
     display: flex;
     gap: 20px;
     width: 100%;
+    margin: 30px 0;
 }
 
 .prep-card {
     background: white;
-    padding: 20px;
+    padding: 25px;
     border-radius: 15px;
     flex: 1;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    border: 2px solid transparent;
-    transition: border-color 0.3s;
-}
-
-.prep-card:hover {
-    border-color: #2575fc;
-}
-
-.prep-card h3 {
-    margin-bottom: 15px;
-    color: #2b32b2;
-}
-
-.prep-card input, .prep-card select {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     text-align: center;
+    border: 2px solid transparent;
+    transition: 0.3s;
 }
 
-/* Sunum Düzeni */
+.prep-card:hover { border-color: #2575fc; }
+.prep-card h3 { color: #2b32b2; margin-bottom: 15px; font-size: 1.2rem; }
+.prep-card input, .prep-card select {
+    width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 14px;
+}
+
+/* Sunum Paneli */
 .presentation-layout {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 30px;
-    width: 90%;
-    height: 90%;
-}
-
-.juror-area {
-    text-align: center;
-}
-
-.juror-avatar {
-    font-size: 80px;
-    margin-bottom: 10px;
+    gap: 20px;
 }
 
 .dialogue-box {
     background: white;
-    color: #333;
-    padding: 30px;
-    border-radius: 20px;
+    padding: 40px;
+    border-radius: 25px;
     width: 100%;
-    min-height: 150px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    font-size: 20px;
+    min-height: 200px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    font-size: 1.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    color: #333;
+    line-height: 1.6;
 }
 
-.disabled {
-    opacity: 0.5;
-    cursor: not-allowed !important;
+.juror-avatar { font-size: 80px; margin-bottom: 10px; }
+
+/* Butonlar */
+.btn {
+    padding: 15px 40px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: 0.3s;
 }
+
+.primary { background: #2575fc; color: white; box-shadow: 0 4px 15px rgba(37, 117, 252, 0.4); }
+.primary:hover { transform: translateY(-2px); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
