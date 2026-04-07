@@ -1,7 +1,20 @@
-// Sayfa yüklendiğinde ana oyun verilerini (örn: kullanıcı adı) çekebilirsin (localstorage)
+// OYUNCU VERİLERİ (Hafızadan Çek)
+let playerName = localStorage.getItem('playerName') || "Oyuncu";
+let playerRole = localStorage.getItem('playerRole') || "Yetişkin";
 
 let currentSlide = 0;
 let presentationData = [];
+
+// Sayfa yüklendiğinde ismi göster
+window.onload = () => {
+    const welcomeText = document.getElementById('office-welcome');
+    if(welcomeText) welcomeText.innerText = `Hoş geldin ${playerName}, projen hazır mı?`;
+};
+
+// HARİTAYA GERİ DÖN (Klasör dışına çıkış)
+function goBackToMap() {
+    window.location.href = '../index.html';
+}
 
 function startPresentation() {
     // 1. Girişleri Al
@@ -9,7 +22,7 @@ function startPresentation() {
     const need = document.getElementById('prep-need').value || 'Genel İhtiyaç';
     const style = document.getElementById('prep-style').value;
 
-    // 2. Basit bir Sunum Senaryosu Oluştur (Arayüz mantığı)
+    // 2. Senaryo Oluştur
     presentationData = [
         `Merhaba, bugün sizlere projemizi sunmaktan heyecan duyuyorum.`,
         `Projemizin temel teknik odak noktası: ${tech}.`,
@@ -32,19 +45,14 @@ function showSlide() {
     const btnElement = document.getElementById('next-slide-btn');
 
     textElement.innerText = presentationData[currentSlide];
-
-    // Butonu Aktif Et
-    btnElement.classList.remove('disabled');
-    btnElement.disabled = false;
+    btnElement.innerText = (currentSlide === presentationData.length - 1) ? "SUNUMU BİTİR" : "SONRAKİ SAYFA ➔";
 }
 
 function nextSlide() {
     currentSlide++;
-
     if (currentSlide < presentationData.length) {
         showSlide();
     } else {
-        // Sunum Bitti - Analiz ve Puanlama Ekranına Geçilebilir
         finishPresentation();
     }
 }
@@ -53,11 +61,18 @@ function finishPresentation() {
     const textElement = document.getElementById('presentation-text');
     const btnElement = document.getElementById('next-slide-btn');
 
-    // Basit bir analiz (Lego mantığı: Puan verelim)
-    // Gelecekte buraya okulda kazanılan puanlar da eklenebilir.
-    textElement.innerHTML = `<h3>Sunum Tamamlandı!</h3><p>Patronunuz projeyi değerlendiriyor...</p><p>Sunum Puanınız: <strong>85 / 100</strong></p>`;
+    // Sunum Analizi
+    textElement.innerHTML = `
+        <div class="result-screen">
+            <h3>Sunum Tamamlandı!</h3>
+            <p>Patronunuz projeyi değerlendirdi...</p>
+            <div class="score-badge">85 / 100</div>
+            <p style="margin-top:10px; font-size:14px;">Tebrikler ${playerName}, ${playerRole} olarak harika bir iş çıkardın!</p>
+        </div>
+    `;
     
-    // Geri Dön butonunu aktif et
-    btnElement.innerText = 'BİTİR VE ÇIK';
-    btnElement.onclick = () => window.location.href = '../index.html';
+    // Butonu Ana Sayfaya Dönüş Butonuna Çevir
+    btnElement.innerText = 'HARİTAYA DÖN VE DEVAM ET';
+    btnElement.classList.add('primary');
+    btnElement.onclick = () => goBackToMap();
 }
