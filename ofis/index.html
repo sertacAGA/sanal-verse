@@ -1,32 +1,48 @@
-<body>
-    <div class="game-container">
+<body class="ofis-theme"> <div class="game-container">
         
-        <button class="back-btn-static" style="top:20px; left:20px; position:absolute; z-index:100;" onclick="goBackToMap()">🔙 VAZGEÇ</button>
+        <button class="back-btn-static" onclick="goBackToMap()">🔙 VAZGEÇ</button>
 
         <div id="office-preparation" class="scene active">
             <h2 id="office-welcome">Hoş geldin...</h2>
-            <div class="content-wrapper" style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 20px;">
-                <div class="input-group">
-                    <p>Teknoloji Odak Noktanız:</p>
+            
+            <div class="preparation-zones">
+                <div class="prep-card">
+                    <h3>🚀 Teknoloji</h3>
+                    <p>Odak Noktanız:</p>
                     <input type="text" id="prep-tech" placeholder="Örn: Yapay Zeka">
-                    
+                </div>
+
+                <div class="prep-card">
+                    <h3>💡 Çözüm</h3>
                     <p>Çözülecek İhtiyaç:</p>
                     <input type="text" id="prep-need" placeholder="Örn: Hızlı Ulaşım">
-                    
+                </div>
+
+                <div class="prep-card">
+                    <h3>🎨 Tasarım</h3>
                     <p>Tasarım Tarzı:</p>
-                    <select id="prep-style" class="btn secondary" style="width: 100%; margin: 10px 0;">
+                    <select id="prep-style">
                         <option value="Modern">Modern</option>
                         <option value="Klasik">Klasik</option>
                         <option value="Futuristik">Futuristik</option>
                     </select>
                 </div>
-                <button class="btn primary" onclick="startPresentation()">SUNUMA BAŞLA 🚀</button>
             </div>
+
+            <button class="btn primary" style="margin-top: 30px;" onclick="startPresentation()">SUNUMA BAŞLA 🚀</button>
         </div>
 
         <div id="office-presentation" class="scene">
-            <div class="presentation-board">
-                <div id="presentation-text">Yükleniyor...</div>
+            <div class="presentation-layout">
+                <div class="juror-area">
+                    <div class="juror-avatar">👨‍💼</div>
+                    <p><strong>Başkanın Değerlendirmesi</strong></p>
+                </div>
+
+                <div class="dialogue-box" id="presentation-text">
+                    Yükleniyor...
+                </div>
+
                 <button id="next-slide-btn" class="btn primary" onclick="nextSlide()">SONRAKİ ➔</button>
             </div>
         </div>
