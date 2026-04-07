@@ -8,6 +8,25 @@ let playerData = {
 // Son kalınan yeri hatırlamak için (Map mi yoksa Dashboard mu?)
 let lastMenu = 'scene-menu'; 
 
+// SİSTEM BAŞLANGICI: HAFIZAYI KONTROL ET
+window.onload = function() {
+    // Oyuncu daha önce giriş yapmış mı?
+    if(localStorage.getItem('isLoggedIn') === 'true') {
+        // Verileri hafızadan çek
+        playerData.username = localStorage.getItem('playerName');
+        playerData.role = localStorage.getItem('playerRole') || "Yetişkin";
+        playerData.gender = localStorage.getItem('playerGender') || "male";
+
+        // Ekrana yansıt
+        document.getElementById('display-name').innerText = playerData.username;
+        updateAvatarVisual();
+
+        // Başlangıç ekranlarını geçip direkt menüyü aç
+        document.querySelectorAll('.scene').forEach(scene => scene.classList.remove('active'));
+        document.getElementById('scene-menu').classList.add('active');
+    }
+};
+
 // SAHNE DEĞİŞTİRME
 function goToScene(sceneId) {
     document.querySelectorAll('.scene').forEach(scene => scene.classList.remove('active'));
@@ -18,6 +37,12 @@ function goToScene(sceneId) {
 function toggleSettings() {
     const modal = document.getElementById('settings-modal');
     modal.classList.toggle('open');
+}
+
+// OYUNU SIFIRLA / ÇIKIŞ YAP (Opsiyonel kullanım için)
+function logout() {
+    localStorage.clear(); // Tüm kayıtları sil
+    location.reload();    // Sayfayı baştan yükle
 }
 
 // GİRİŞ KONTROLÜ VE ROL MANTIĞI
@@ -42,8 +67,13 @@ function validateAndGo(nextSceneId) {
     document.getElementById('display-name').innerText = playerData.username;
 
     // ROL'E GÖRE AVATAR SIFIRLA
-    // Eğer çocuk seçildiyse avatar görselleri çocuk olmalı, yetişkinse yetişkin.
     updateAvatarVisual();
+
+    // *** YENİ: VERİLERİ HAFIZAYA KAYDET ***
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('playerName', playerData.username);
+    localStorage.setItem('playerRole', playerData.role);
+    localStorage.setItem('playerGender', playerData.gender);
 
     goToScene(nextSceneId);
 }
@@ -60,41 +90,35 @@ function updateAvatarVisual() {
     const avatarVisual = document.getElementById('avatar-visual');
     
     if (playerData.role === "Çocuk") {
-        // ÇOCUK İKONLARI
         if (playerData.gender === 'male') {
-            avatarVisual.innerText = "👦"; // Çocuk Erkek
+            avatarVisual.innerText = "👦"; 
         } else {
-            avatarVisual.innerText = "👧"; // Çocuk Kız
+            avatarVisual.innerText = "👧"; 
         }
     } else {
-        // YETİŞKİN İKONLARI
         if (playerData.gender === 'male') {
-            avatarVisual.innerText = "👨"; // Yetişkin Erkek
+            avatarVisual.innerText = "👨"; 
         } else {
-            avatarVisual.innerText = "👩"; // Yetişkin Kadın
+            avatarVisual.innerText = "👩"; 
         }
     }
 }
 
 // ODA / BİNA GİRİŞ FONKSİYONU
-// Bu fonksiyon hem menüden hem haritadan çalışır.
 function goToRoom(imageFile, roomName) {
     const bgImage = document.getElementById('room-bg');
     const title = document.getElementById('room-title');
     
-    // Hangi menüden gelindiğini kaydet (Geri dönünce oraya gitsin)
-    // Eğer şu an haritadaysak (scene-map aktifse) geri dönüş haritaya olsun
+    // Hangi menüden gelindiğini kaydet
     if(document.getElementById('scene-map').classList.contains('active')) {
         lastMenu = 'scene-map';
     } else {
         lastMenu = 'scene-menu';
     }
 
-    // Odanın resmini ve adını ayarla
     bgImage.src = imageFile;
     title.innerText = roomName;
 
-    // Odayı göster
     goToScene('scene-room-view');
 }
 
