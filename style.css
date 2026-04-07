@@ -12,7 +12,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* İstenmeyen kaydırma çubuklarını engeller */
+    overflow: hidden; 
 }
 
 body {
@@ -22,7 +22,7 @@ body {
     align-items: center;
 }
 
-/* ANA OYUN ALANI (Tam Ekran Yapıldı) */
+/* ANA OYUN ALANI */
 .game-container {
     width: 100vw;
     height: 100vh;
@@ -31,7 +31,6 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    /* Önceki köşelikler, gölgeler ve kenarlıklar tam ekran görünümü için kaldırıldı */
 }
 
 /* AYARLAR MODALI (POP-UP) */
@@ -53,6 +52,7 @@ body {
     border-radius: 20px;
     width: 300px;
     text-align: center;
+    position: relative; /* İçindeki X butonu için gerekli */
 }
 .setting-item {
     display: flex;
@@ -67,7 +67,7 @@ body {
     display: none;
     width: 100%;
     height: 100%;
-    position: absolute; /* Sahnelerin üst üste tam oturması için */
+    position: absolute; 
     top: 0;
     left: 0;
     flex-direction: column;
@@ -148,7 +148,7 @@ input[type="radio"] { display: none; }
 
 /* TAM EKRAN VE HARİTA */
 .full-screen { padding: 0; position: relative; }
-.bg-image { width: 100%; height: 100%; object-fit: cover; } /* Resmi ekrana tam yayar */
+.bg-image { width: 100%; height: 100%; object-fit: cover; } 
 
 .back-btn {
     position: absolute; top: 20px; left: 20px; z-index: 100;
@@ -156,27 +156,48 @@ input[type="radio"] { display: none; }
     padding: 10px 20px; border-radius: 10px; cursor: pointer; border: 1px solid white;
 }
 
-/* HARİTA NOKTALARI (Güncellendi) */
-.hotspot {
-    position: absolute; width: 90px; height: 70px;
-    /* Geliştirirken görmek için background rengini açabilirsin */
-    background: rgba(255, 255, 0, 0.0); 
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
+/* HARİTA NOKTALARI (Tablet Uyumlu Görünür Alanlar) */
+#scene-map {
+    position: relative; /* İçindeki noktaların hizalanması için şart */
 }
-.hotspot .label {
-    background: rgba(0,0,0,0.8); color: white; padding: 4px 8px;
-    border-radius: 5px; font-size: 11px; opacity: 0; transition: opacity 0.3s; pointer-events: none;
-}
-.hotspot:hover .label { opacity: 1; }
 
-/* Koordinatlar (Resme Göre Tahmini) */
-.hotspot.school { top: 12%; left: 15%; width: 110px; height: 90px; }
-.hotspot.cafe { top: 12%; right: 18%; width: 100px; height: 80px; }
-/* Ev biraz aşağı çekildi */
-.hotspot.home { bottom: 15%; left: 36%; width: 80px; height: 70px; } 
-.hotspot.work { bottom: 20%; right: 14%; width: 90px; height: 90px; }
-/* Atölye eklendi (Sol Alt Kısım) */
-.hotspot.workshop { bottom: 25%; left: 12%; width: 100px; height: 80px; }
+.hotspot {
+    position: absolute; 
+    width: 70px; /* Tıklanabilir geniş alan */
+    height: 70px;
+    background-color: rgba(255, 255, 255, 0.2); /* Hafif beyaz şeffaf daire */
+    border: 2px solid rgba(255, 255, 255, 0.5); /* Etrafında çerçeve */
+    border-radius: 50%; /* Tam yuvarlak yapar */
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    cursor: pointer;
+    transform: translate(-50%, -50%); /* Merkezden hizalar (Kritik) */
+    transition: all 0.3s ease;
+}
+
+.hotspot:hover { 
+    background-color: rgba(43, 50, 178, 0.8); /* Üzerine gelince belirginleşir */
+    transform: translate(-50%, -50%) scale(1.1); /* Hafif büyür */
+}
+
+.hotspot .label {
+    position: absolute;
+    bottom: -30px; /* Yazıyı dairenin hemen altına atar */
+    background: rgba(0,0,0,0.8); 
+    color: white; 
+    padding: 4px 8px;
+    border-radius: 5px; 
+    font-size: 12px; 
+    pointer-events: none; /* Yazıya tıklanmayı engeller */
+}
+
+/* Koordinatlar (Merkez noktaya göre % olarak ayarlandı) */
+.hotspot.school { top: 16%; left: 20%; }
+.hotspot.cafe { top: 16%; left: 75%; }
+.hotspot.home { top: 80%; left: 40%; }
+.hotspot.work { top: 75%; left: 80%; }
+.hotspot.workshop { top: 70%; left: 17%; }
 
 /* ODA BAŞLIĞI */
 .room-title-badge {
