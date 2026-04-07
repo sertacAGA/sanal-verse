@@ -10,21 +10,18 @@
 
     <div class="game-container">
         
-        <div id="settings-modal" class="modal-overlay">
-            <div class="modal-content">
-                <h2>AYARLAR</h2>
-                <div class="setting-item">
-                    <span>Ses Düzeyi</span>
-                    <input type="range" min="0" max="100" value="80">
-                </div>
-                <div class="setting-item">
-                    <span>Müzik</span>
-                    <input type="checkbox" checked>
-                </div>
-                <button class="btn secondary" onclick="toggleSettings()">KAPAT</button>
-            </div>
+<div id="settings-modal" class="modal-overlay">
+    <div class="modal-content" style="position: relative;">
+        <span onclick="toggleSettings()" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer;">✖</span>
+        
+        <h2>AYARLAR</h2>
+        <div class="setting-item">
+            <span>Ses Düzeyi</span>
+            <input type="range" min="0" max="100" value="80">
         </div>
-
+        </div>
+</div>
+        
         <div id="scene-start" class="scene active">
             <div class="content-wrapper">
                 <div class="logo-area">
@@ -92,12 +89,12 @@
                     <span>EVİM</span>
                 </div>
                 <div class="menu-card" onclick="goToRoom('images/Acik_odalar.jpg', 'MEYDAN')">
-                    <div class="card-icon">🚪</div>
+                    <div class="card-icon">⛲</div>
                     <span>MEYDAN</span>
                 </div>
             </div>
         </div>
-
+        
         <div id="scene-map" class="scene full-screen">
             <img src="images/IMG_1392.jpg" alt="Şehir Haritası" class="bg-image">
             <button class="back-btn" onclick="goToScene('scene-menu')">🔙 MENÜ</button>
