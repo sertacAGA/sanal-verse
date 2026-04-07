@@ -164,14 +164,117 @@
     </div>
 
     <script>
-        // --- V2.5 ENTEGRASYONU ---
-        // Hafızadaki kullanıcı ismini çek ve göster
-        const playerName = localStorage.getItem('playerName') || "Oyuncu";
-        document.getElementById('player-name-display').innerText = playerName;
+// --- DİNAMİK MENÜ OLUŞTURUCU ---
+const menuContainer = document.getElementById('menu-container');
+let currentLesson = null;
+let currentStep = 0;
+let userScore = parseInt(localStorage.getItem('userScore')) || 0;
 
-        // ... (Geri kalan JavaScript mantığı senin gönderdiğinle aynı kalabilir) ...
-        // Not: finishLessonWithScore fonksiyonunun sonuna 
-        // alert yerine daha şık bir modal veya innerHTML sonucu ekleyebilirsin.
+// Puanı ekranda güncelle
+document.getElementById('score-display').innerText = userScore + " Puan";
+
+function buildMenu() {
+    menuContainer.innerHTML = ""; // Menüyü temizle
+    
+    curriculumData.forEach(item => {
+        // Ana Ders Başlığı (Matematik, Edebiyat vb.)
+        const subjectBtn = document.createElement('button');
+        subjectBtn.className = 'main-subject';
+        subjectBtn.innerText = "📘 " + item.subject;
+        menuContainer.appendChild(subjectBtn);
+
+        // Alt Konular (Geometri, Üslü Sayılar vb.)
+        item.lessons.forEach(lesson => {
+            const topicBtn = document.createElement('button');
+            topicBtn.className = 'sub-topic';
+            topicBtn.innerHTML = `<span>${lesson.title}</span> <span class="points">+${lesson.points}p</span>`;
+            
+            topicBtn.onclick = () => loadLesson(lesson);
+            menuContainer.appendChild(topicBtn);
+        });
+    });
+}
+
+// --- DERS YÜKLEME MANTIĞI ---
+function loadLesson(lesson) {
+    currentLesson = lesson;
+    currentStep = 0;
+    document.getElementById('lesson-title').innerText = lesson.title;
+    renderStep();
+    
+    // Aktif dersi görsel olarak işaretle
+    document.querySelectorAll('.sub-topic').forEach(btn => btn.classList.remove('active-lesson'));
+    event.currentTarget.classList.add('active-lesson');
+}
+
+function renderStep() {
+    const content = document.getElementById('dynamic-content');
+    const steps = ["st-0", "st-1", "st-2", "st-3", "st-4", "st-5"];
+    
+    // Progress bar güncelle
+    steps.forEach((id, index) => {
+        document.getElementById(id).className = (index === currentStep) ? 'p-step active' : 'p-step';
+    });
+
+    // İçeriği temizle ve aşamaya göre doldur
+    content.innerHTML = "";
+    const lessonData = currentLesson.content;
+
+    switch(currentStep) {
+        case 0: content.innerHTML = `<p>${lessonData.text}</p>`; break;
+        case 1: content.innerHTML = `<img src="${lessonData.images[0]}" style="width:100%; border-radius:15px;">`; break;
+        case 2: content.innerHTML = `<iframe width="100%" height="300" src="${lessonData.video}" frameborder="0" allowfullscreen></iframe>`; break;
+        case 3: content.innerHTML = `<ul>${lessonData.examples.map(e => `<li>${e}</li>`).join('')}</ul>`; break;
+        case 4: content.innerHTML = `<p><strong>Görev:</strong> ${lessonData.activityText}</p><div id="drawing-canvas" style="height:200px; display:flex; align-items:center; justify-content:center; color:#bdc3c7;">[Çizim Alanı Aktif]</div>`; break;
+        case 5: renderQuiz(lessonData.quiz); break;
+    }
+
+    // Butonları güncelle
+    document.getElementById('btn-prev').disabled = (currentStep === 0);
+    document.getElementById('btn-next').disabled = false;
+    document.getElementById('btn-next').innerText = (currentStep === 5) ? "BİTİR" : "İLERİ";
+}
+
+function changeStep(dir) {
+    if (currentStep === 5 && dir === 1) {
+        finishLesson();
+        return;
+    }
+    currentStep += dir;
+    renderStep();
+}
+
+function renderQuiz(quizData) {
+    const content = document.getElementById('dynamic-content');
+    content.innerHTML = `<h3>Kısa Sınav</h3>`;
+    quizData.forEach((q, idx) => {
+        const qBox = document.createElement('div');
+        qBox.className = 'quiz-box';
+        qBox.innerHTML = `<p>${q.q}</p>`;
+        q.opts.forEach((opt, optIdx) => {
+            const btn = document.createElement('button');
+            btn.className = 'q-btn';
+            btn.innerText = opt;
+            btn.onclick = () => {
+                if(optIdx === q.ans) btn.classList.add('correct');
+                else btn.classList.add('wrong');
+            };
+            qBox.appendChild(btn);
+        });
+        content.appendChild(qBox);
+    });
+}
+
+function finishLesson() {
+    userScore += currentLesson.points;
+    localStorage.setItem('userScore', userScore);
+    document.getElementById('score-display').innerText = userScore + " Puan";
+    alert("Tebrikler! Dersi tamamladın ve puan kazandın.");
+    location.reload(); // Veya haritaya dön
+}
+
+// Uygulamayı başlat
+buildMenu();
     </script>
 </body>
 </html>
