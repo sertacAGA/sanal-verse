@@ -1,63 +1,36 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanal Verse - Ofis Sunumu</title>
-    <link rel="stylesheet" href="../style.css"> 
-    <link rel="stylesheet" href="ofis_style.css">
-</head>
 <body>
-
-    <div class="game-container ofis-theme">
+    <div class="game-container">
         
-        <button class="back-btn" onclick="window.location.href='../index.html'">🔙 HARİTAYA DÖN</button>
-
-        <div class="room-title-badge">İŞ YERİ - SUNUM ODASI</div>
+        <button class="back-btn-static" style="top:20px; left:20px; position:absolute; z-index:100;" onclick="goBackToMap()">🔙 VAZGEÇ</button>
 
         <div id="office-preparation" class="scene active">
-            <div class="content-wrapper vertical">
-                <h2>Sunum Hazırlığı</h2>
-                <p>Projenin hangi yönlerini vurgulamak istersin?</p>
-                
-                <div class="preparation-zones">
-                    <div class="prep-card">
-                        <h3>🔧 Teknik</h3>
-                        <input type="text" id="prep-tech" placeholder="Örn: Otonom Rover Sistemi">
-                    </div>
-                    <div class="prep-card">
-                        <h3>💡 İhtiyaç</h3>
-                        <input type="text" id="prep-need" placeholder="Örn: Arazi Erişilebilirlik">
-                    </div>
-                    <div class="prep-card">
-                        <h3>🎤 Tarz</h3>
-                        <select id="prep-style">
-                            <option value="profesyonel">Profesyonel & Resmi</option>
-                            <option value="heyecanli">Heyecanlı & Yenilikçi</option>
-                            <option value="duygusal">Duygusal & Toplumsal</option>
-                        </select>
-                    </div>
+            <h2 id="office-welcome">Hoş geldin...</h2>
+            <div class="content-wrapper" style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 20px;">
+                <div class="input-group">
+                    <p>Teknoloji Odak Noktanız:</p>
+                    <input type="text" id="prep-tech" placeholder="Örn: Yapay Zeka">
+                    
+                    <p>Çözülecek İhtiyaç:</p>
+                    <input type="text" id="prep-need" placeholder="Örn: Hızlı Ulaşım">
+                    
+                    <p>Tasarım Tarzı:</p>
+                    <select id="prep-style" class="btn secondary" style="width: 100%; margin: 10px 0;">
+                        <option value="Modern">Modern</option>
+                        <option value="Klasik">Klasik</option>
+                        <option value="Futuristik">Futuristik</option>
+                    </select>
                 </div>
-
-                <button class="btn primary" onclick="startPresentation()">SUNUMA BAŞLA</button>
+                <button class="btn primary" onclick="startPresentation()">SUNUMA BAŞLA 🚀</button>
             </div>
         </div>
 
         <div id="office-presentation" class="scene">
-            <div class="presentation-layout">
-                <div class="juror-area">
-                    <div class="juror-avatar">👤</div>
-                    <h3>Patron (veya Jüri)</h3>
-                </div>
-                <div class="dialogue-box">
-                    <p id="presentation-text">Sunum bekleniyor...</p>
-                </div>
-                <button id="next-slide-btn" class="btn primary disabled" onclick="nextSlide()" disabled>DEVAM ET</button>
+            <div class="presentation-board">
+                <div id="presentation-text">Yükleniyor...</div>
+                <button id="next-slide-btn" class="btn primary" onclick="nextSlide()">SONRAKİ ➔</button>
             </div>
         </div>
 
     </div>
-
-    <script src="ofis_script.js"></script>
+    <script src="script.js"></script>
 </body>
-</html>
