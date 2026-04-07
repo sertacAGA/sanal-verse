@@ -80,36 +80,20 @@ function nextSlide() {
     }
 }
 
-// --- FİNAL EKRANI VE SKORLAMA ---
+// finishPresentation fonksiyonu içindeki ilgili alan:
 function finishPresentation() {
     const textElement = document.getElementById('presentation-text');
     const btnElement = document.getElementById('next-slide-btn');
 
-    if (textElement && btnElement) {
-        // Sunum Analizi ve Sonuç Ekranı
-        textElement.innerHTML = `
-            <div class="result-screen" style="text-align: center; animation: fadeIn 0.8s ease-in;">
-                <h3 style="color: #27ae60;">Sunum Başarıyla Tamamlandı!</h3>
-                <p>Yatırımcılar ve yöneticiler projeyi değerlendirdi...</p>
-                <div class="score-badge" style="
-                    font-size: 3em; 
-                    font-weight: 900; 
-                    color: #f1c40f; 
-                    margin: 20px 0;
-                    text-shadow: 0 4px 10px rgba(0,0,0,0.2);
-                ">85 / 100</div>
-                <p style="margin-top:10px; font-size:1.1em;">
-                    Tebrikler <strong>${playerName}</strong>!<br>
-                    Bir <strong>${playerRole}</strong> olarak vizyonun çok etkileyiciydi.
-                </p>
-            </div>
-        `;
-        
-        // Ana Butonu Haritaya Dönüş Butonuna Çevir
-        btnElement.innerText = 'HARİTAYA DÖN VE DEVAM ET';
-        btnElement.classList.add('primary');
-        
-        // Mevcut onclick olayını ezerek haritaya dönmesini sağla
-        btnElement.onclick = () => goBackToMap();
-    }
+    // CSS'deki dialogue-box yapısını koruyarak sonucu gösteriyoruz
+    textElement.innerHTML = `
+        <div style="text-align: center; width: 100%;">
+            <h3 style="color: #2575fc; margin-bottom: 5px;">Sunum Başarıyla Tamamlandı!</h3>
+            <div style="font-size: 2.5em; font-weight: bold; color: #f1c40f;">🏆 85 / 100</div>
+            <p style="font-size: 16px; margin-top: 10px;">Tebrikler ${playerName}, harika bir ${playerRole} vizyonu!</p>
+        </div>
+    `;
+    
+    btnElement.innerText = 'HARİTAYA DÖN VE DEVAM ET';
+    btnElement.onclick = () => goBackToMap();
 }
