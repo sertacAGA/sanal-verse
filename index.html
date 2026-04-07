@@ -2,8 +2,8 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanal Verse - Prototip V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sanal Verse - Prototip V2.5</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
         
         <div id="settings-modal" class="modal-overlay">
             <div class="modal-content">
-                <span onclick="toggleSettings()" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #666;">✖</span>
+                <span onclick="toggleSettings()" class="close-x">✖</span>
                 
                 <h2>AYARLAR</h2>
                 <div class="setting-item">
@@ -23,9 +23,10 @@
                     <span>Müzik</span>
                     <input type="checkbox" checked>
                 </div>
-                <button class="btn secondary" style="min-width: 100px; margin-top: 10px;" onclick="toggleSettings()">KAPAT</button>
+                
+                <button class="btn secondary" style="min-width: 120px;" onclick="toggleSettings()">TAMAM</button>
                 <br>
-                <button onclick="logout()" style="background: none; border: none; color: #ff4757; cursor: pointer; margin-top: 20px; text-decoration: underline;">Oturumu Kapat / Sıfırla</button>
+                <button onclick="logout()" class="modal-logout-btn">Oturumu Kapat / Sıfırla</button>
             </div>
         </div>
 
@@ -94,11 +95,16 @@
                     <span>MEYDAN</span>
                 </div>
             </div>
+            <button class="logout-link" onclick="logout()">🚪 Oturumu Kapat ve Sıfırla</button>
         </div>
 
         <div id="scene-map" class="scene full-screen">
             <img src="images/IMG_1392.jpg" alt="Şehir Haritası" class="bg-image">
-            <button class="back-btn" onclick="goToScene('scene-menu')">🔙 MENÜ</button>
+            
+            <div class="top-controls">
+                <button class="back-btn-static" onclick="goToScene('scene-menu')">🔙 MENÜ</button>
+                <button class="exit-btn-static" onclick="logout()">ÇIKIŞ ❌</button>
+            </div>
 
             <div class="hotspot school" onclick="window.location.href='okul/index.html'"><span class="label">OKUL</span></div>
             <div class="hotspot cafe" onclick="window.location.href='cafe/index.html'"><span class="label">CAFE</span></div>
