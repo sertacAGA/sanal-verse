@@ -107,6 +107,13 @@
         }
         .q-btn.correct { background: #2ecc71; color: white; border-color: #27ae60; }
         .q-btn.wrong { background: #e74c3c; color: white; border-color: #c0392b; }
+
+        /* Her türlü uyarı veya izin kutusunu en öne taşır */
+        .tts-permission-dialog, .modal, #notification-area {
+            position: fixed;
+            z-index: 9999 !important;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body>
@@ -227,6 +234,18 @@ function renderStep() {
         case 3: content.innerHTML = `<ul>${lessonData.examples.map(e => `<li>${e}</li>`).join('')}</ul>`; break;
         case 4: content.innerHTML = `<p><strong>Görev:</strong> ${lessonData.activityText}</p><div id="drawing-canvas" style="height:200px; display:flex; align-items:center; justify-content:center; color:#bdc3c7;">[Çizim Alanı Aktif]</div>`; break;
         case 5: renderQuiz(lessonData.quiz); break;
+
+        // renderStep() içinde içeriği bastıktan hemen sonra eklenebilir
+        const speakBtn = document.createElement('button');
+        speakBtn.innerText = "🔊 Sesli Dinle";
+        speakBtn.className = "btn"; // Mevcut stilini kullanır
+        speakBtn.onclick = () => {
+            const synth = window.speechSynthesis;
+            const utterThis = new SpeechSynthesisUtterance(lessonData.text);
+            utterThis.lang = 'tr-TR';
+            synth.speak(utterThis);
+        };
+        content.appendChild(speakBtn);
     }
 
     // Butonları güncelle
