@@ -1,325 +1,248 @@
 // ---------------- STATE ----------------
 let gameState = {
-  step: "career",
-  career: null,
-  vehicle: null,
-  parts: []
+    step: "category",
+    category: null,
+    vehicle: null,
+    parts: []
 };
 
 // ---------------- DATA ----------------
-const vehicles = [
-  { id: "drone_fast", name: "Hızlı Drone", desc: "Çok hızlı, düşük hasar" },
-  { id: "drone_power", name: "Saldırı Drone", desc: "Yüksek hasar" }
+const productionLines = [
+    { id: "air", name: "Hava Araçları", icon: "🚁", desc: "Drone ve İHA üretimi" },
+    { id: "robot", name: "Robotik Sistemler", icon: "🤖", desc: "Taşıma ve savunma robotları" },
+    { id: "land", name: "Kara Araçları", icon: "🏎️", desc: "Otonom araç projeleri" }
 ];
+
+const vehicles = {
+    air: [
+        { id: "drone_fast", name: "Hızlı Drone", desc: "Keşif odaklı, yüksek hız." },
+        { id: "drone_power", name: "Saldırı Drone", desc: "Ağır yük kapasiteli." }
+    ],
+    robot: [
+        { id: "bot_walker", name: "Örümcek Bot", desc: "Her türlü araziye uygun." },
+        { id: "bot_arm", name: "Endüstriyel Kol", desc: "Hassas montaj işleri." }
+    ]
+};
 
 const parts = [
-  { id: "engine", name:"Motor", desc:"Hız artırır", speed: 20 },
-  { id: "gun", name:"Silah", desc:"Hasar artırır", damage: 25 },
-  { id: "armor", name:"Zırh", desc:"Dayanıklılık", damage: 5 }
+    { id: "engine", name: "Titanyum Motor", desc: "Hızı +30 artırır", speed: 30 },
+    { id: "battery", name: "Lityum-İyon Pro", desc: "Dayanıklılık ve Enerji sağlar", speed: 10, damage: 10 },
+    { id: "laser", name: "Lazer Ünitesi", desc: "Hasarı +35 artırır", damage: 35 }
 ];
-
-// ---------------- STEP UI ----------------
-function updateSteps() {
-  document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
-
-  const el = document.getElementById("step-" + gameState.step);
-  if (el) el.classList.add("active");
-}
 
 // ---------------- NAV ----------------
 function loadStep(step) {
-  gameState.step = step;
-  updateSteps();
+    gameState.step = step;
+    updateSteps();
 
-  if (step === "career") renderCareer();
-  if (step === "vehicle") renderVehicle();
-  if (step === "build") renderBuild();
-  if (step === "test") renderTest();
+    if (step === "category") renderCategory();
+    if (step === "vehicle") renderVehicle();
+    if (step === "build") renderBuild();
+    if (step === "test") renderTestArea();
 }
 
-// ---------------- STEP 1: CAREER ----------------
-function renderCareer() {
-  document.getElementById("content").innerHTML = `
-    <h2>Kariyer Seç</h2>
-
-    <div class="card">
-      <div class="part" onclick="selectCareer('engineer')">
-        <h3>🔧 Mühendis</h3>
-        <p>Drone üret ve geliştir</p>
-      </div>
-    </div>
-  `;
+function updateSteps() {
+    document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+    const el = document.getElementById("step-" + gameState.step);
+    if (el) el.classList.add("active");
 }
 
-function selectCareer(career) {
-  gameState.career = career;
-  loadStep("vehicle");
+// ---------------- STEP 1: CATEGORY ----------------
+function renderCategory() {
+    document.getElementById("content").innerHTML = `
+        <h2>Üretim Hattı Seçin</h2>
+        <div class="parts">
+            ${productionLines.map(line => `
+                <div class="part" onclick="selectCategory('${line.id}')">
+                    <div style="font-size:3em">${line.icon}</div>
+                    <h3>${line.name}</h3>
+                    <p>${line.desc}</p>
+                </div>
+            `).join("")}
+        </div>
+    `;
+}
+
+function selectCategory(id) {
+    gameState.category = id;
+    loadStep("vehicle");
 }
 
 // ---------------- STEP 2: VEHICLE ----------------
 function renderVehicle() {
-  document.getElementById("content").innerHTML = `
-    <h2>Drone Seç</h2>
-
-    <div class="parts">
-      ${vehicles.map(v => `
-        <div class="part" onclick="selectVehicle('${v.id}')">
-          <h3>${v.name}</h3>
-          <p>${v.desc}</p>
+    const list = vehicles[gameState.category] || [];
+    document.getElementById("content").innerHTML = `
+        <h2>Model Seçin</h2>
+        <div class="parts">
+            ${list.map(v => `
+                <div class="part" onclick="selectVehicle('${v.id}')">
+                    <h3>${v.name}</h3>
+                    <p>${v.desc}</p>
+                </div>
+            `).join("")}
         </div>
-      `).join("")}
-    </div>
-
-    <button onclick="loadStep('career')">← Geri</button>
-  `;
+        <button class="btn-action" style="background:#94a3b8" onclick="loadStep('category')">← Geri</button>
+    `;
 }
 
 function selectVehicle(id) {
-  gameState.vehicle = vehicles.find(v => v.id === id);
-  loadStep("build");
+    const list = vehicles[gameState.category];
+    gameState.vehicle = list.find(v => v.id === id);
+    loadStep("build");
 }
 
 // ---------------- STEP 3: BUILD ----------------
 function renderBuild() {
-  document.getElementById("content").innerHTML = `
-    <h2>Drone Oluştur</h2>
-
-    <div class="card">
-      <h3>Parça Ekle</h3>
-      <div class="parts">
-        ${parts.map(p => `
-          <div class="part" onclick="addPart('${p.id}')">
-            <h4>${p.name}</h4>
-            <p>${p.desc}</p>
-          </div>
-        `).join("")}
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Eklenen Parçalar</h3>
-      <div id="partList"></div>
-    </div>
-
-    <div class="card">
-      <h3>Performans</h3>
-      <div id="stats"></div>
-    </div>
-
-    <button onclick="loadStep('vehicle')">← Geri</button>
-    <button onclick="loadStep('test')">🚀 TEST ET</button>
-  `;
-
-  updateBuild();
+    const stats = calculateStats();
+    document.getElementById("content").innerHTML = `
+        <div style="display:flex; gap:20px;">
+            <div style="flex:1">
+                <h2>Parça Entegrasyonu</h2>
+                <div class="parts">
+                    ${parts.map(p => `
+                        <div class="part" onclick="addPart('${p.id}')">
+                            <h4>${p.name}</h4>
+                            <p>${p.desc}</p>
+                        </div>
+                    `).join("")}
+                </div>
+            </div>
+            
+            <div style="width:300px;">
+                <div class="card">
+                    <h3>Performans</h3>
+                    <div class="bar-container">
+                        <div class="bar-label"><span>Hız</span><span>${stats.speed}</span></div>
+                        <div class="bar"><div class="fill" style="width:${Math.min(stats.speed, 100)}%"></div></div>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar-label"><span>Güç</span><span>${stats.damage}</span></div>
+                        <div class="bar"><div class="fill" style="width:${Math.min(stats.damage, 100)}%"></div></div>
+                    </div>
+                </div>
+                <div class="card" id="added-parts">
+                    <h3>Entegre Edilenler</h3>
+                    ${gameState.parts.map(p => `<div>✅ ${p.name}</div>`).join("") || "Parça yok"}
+                </div>
+                <button class="btn-action" style="width:100%" onclick="loadStep('test')">🚀 TESTE BAŞLA</button>
+            </div>
+        </div>
+    `;
 }
 
 function addPart(id) {
-  const part = parts.find(p => p.id === id);
-  gameState.parts.push(part);
-  renderBuild();
+    const part = parts.find(p => p.id === id);
+    gameState.parts.push(part);
+    renderBuild();
 }
 
-// ---------------- BUILD UPDATE ----------------
-function updateBuild() {
-  // Parça listesi
-  document.getElementById("partList").innerHTML =
-    gameState.parts.length
-      ? gameState.parts.map(p => `<p>🔧 ${p.name}</p>`).join("")
-      : "<p>Henüz parça eklenmedi</p>";
-
-  // Stat hesapla
-  const stats = calculateStats();
-
-  document.getElementById("stats").innerHTML = `
-    <p>Hız</p>
-    <div class="bar">
-      <div class="fill" style="width:${stats.speed}%"></div>
-    </div>
-
-    <p>Hasar</p>
-    <div class="bar">
-      <div class="fill" style="width:${stats.damage}%"></div>
-    </div>
-  `;
-}
-
-// ---------------- CALC ----------------
 function calculateStats() {
-  let stats = { speed: 0, damage: 0 };
-
-  gameState.parts.forEach(p => {
-    stats.speed += p.speed || 0;
-    stats.damage += p.damage || 0;
-  });
-
-  return stats;
-}
-
-// ---------------- STEP 4: TEST ----------------
-function renderTest() {
-  const stats = calculateStats();
-
-  // Basit skor formülü
-  const score = (stats.speed * 2) + (stats.damage * 3);
-
-  document.getElementById("content").innerHTML = `
-    <h2>Test Sonucu</h2>
-
-    <div class="card">
-      <p>🚀 Hız: ${stats.speed}</p>
-      <p>💥 Hasar: ${stats.damage}</p>
-      <h3>Skor: ${score}</h3>
-    </div>
-
-    <button onclick="loadStep('build')">← Geri</button>
-    <button onclick="restart()">🔄 Yeniden Başla</button>
-  `;
-}
-
-// ---------------- RESET ----------------
-function restart() {
-  gameState = {
-    step: "career",
-    career: null,
-    vehicle: null,
-    parts: []
-  };
-
-  loadStep("career");
-}
-
-// ---------------- INIT ----------------
-loadStep("career");
-
-// ---------------- MINI GAME ----------------
-
-let canvas, ctx;
-let player, bullets, targets;
-let score = 0;
-let timeLeft = 30;
-let gameInterval;
-
-// TEST EKRANINI DEĞİŞTİR
-function renderTest() {
-  document.getElementById("content").innerHTML = `
-    <h2>Test Alanı</h2>
-    <p>SPACE ile ateş et</p>
-    <p>Süre: <span id="time">30</span></p>
-    <p>Skor: <span id="score">0</span></p>
-    <button onclick="loadStep('build')">← Geri</button>
-  `;
-
-  startGame();
-}
-
-// OYUN BAŞLAT
-function startGame() {
-  canvas = document.getElementById("gameCanvas");
-  ctx = canvas.getContext("2d");
-  canvas.style.display = "block";
-
-  const stats = calculateStats();
-
-  player = {
-    x: 50,
-    y: 200,
-    speed: 2 + stats.speed * 0.1
-  };
-
-  bullets = [];
-  targets = [];
-  score = 0;
-  timeLeft = 30;
-
-  spawnTargets();
-
-  document.addEventListener("keydown", shoot);
-
-  gameInterval = setInterval(updateGame, 1000/60);
-  setInterval(updateTimer, 1000);
-}
-
-// HEDEF OLUŞTUR
-function spawnTargets() {
-  setInterval(() => {
-    targets.push({
-      x: 600,
-      y: Math.random() * 350,
-      speed: 2
+    let s = { speed: 10, damage: 10 };
+    gameState.parts.forEach(p => {
+        s.speed += p.speed || 0;
+        s.damage += p.damage || 0;
     });
-  }, 1000);
+    return s;
 }
 
-// ATEŞ
-function shoot(e) {
-  if (e.code === "Space") {
-    bullets.push({
-      x: player.x,
-      y: player.y,
-      speed: 5
-    });
-  }
+// ---------------- STEP 4: TEST AREA (Mini Game Fix) ----------------
+function renderTestArea() {
+    document.getElementById("content").innerHTML = `
+        <div style="text-align:center">
+            <h2>Test Sürüşü Başlıyor!</h2>
+            <p>Drone'u hareket ettirmek için Fareyi kullan, ateş etmek için Tıkla!</p>
+            <div id="game-ui" style="display:flex; justify-content:center; gap:20px; font-weight:bold; color:#22c55e;">
+                <span>SÜRE: <span id="time">30</span></span>
+                <span>SKOR: <span id="score">0</span></span>
+            </div>
+        </div>
+    `;
+    startDroneGame();
 }
 
-// TIMER
-function updateTimer() {
-  timeLeft--;
-  document.getElementById("time").innerText = timeLeft;
+// Oyun mantığını V2.5'e göre güncelledim
+function startDroneGame() {
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.style.display = "block";
+    
+    let score = 0;
+    let timeLeft = 30;
+    let targets = [];
+    const stats = calculateStats();
 
-  if (timeLeft <= 0) {
-    endGame();
-  }
+    // Drone objesi
+    let drone = { x: 100, y: 250, size: 30 };
+
+    // Fare takibi
+    canvas.onmousemove = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        drone.y = e.clientY - rect.top;
+    };
+
+    const gameLoop = setInterval(() => {
+        ctx.fillStyle = "#0f172a";
+        ctx.fillRect(0,0,800,500);
+
+        // Drone çizimi
+        ctx.fillStyle = "#22c55e";
+        ctx.fillRect(drone.x, drone.y - 15, 40, 30);
+        ctx.fillStyle = "cyan";
+        ctx.fillRect(drone.x + 35, drone.y - 5, 10, 10); // Burun
+
+        // Hedef üretimi
+        if(Math.random() < 0.05) {
+            targets.push({ x: 800, y: Math.random() * 450, speed: 3 + Math.random() * 5 });
+        }
+
+        // Hedefleri güncelle
+        targets.forEach((t, index) => {
+            t.x -= t.speed;
+            ctx.fillStyle = "#ef4444";
+            ctx.beginPath();
+            ctx.arc(t.x, t.y, 15, 0, Math.PI*2);
+            ctx.fill();
+
+            // Çarpışma kontrolü
+            if(t.x < drone.x + 40 && t.x > drone.x && t.y > drone.y - 20 && t.y < drone.y + 20) {
+                targets.splice(index, 1);
+                score += 10;
+                document.getElementById("score").innerText = score;
+            }
+        });
+
+    }, 1000/60);
+
+    const timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("time").innerText = timeLeft;
+        if(timeLeft <= 0) {
+            clearInterval(gameLoop);
+            clearInterval(timer);
+            endGame(score);
+        }
+    }, 1000);
 }
 
-// OYUN LOOP
-function updateGame() {
-  ctx.clearRect(0,0,600,400);
+function endGame(finalScore) {
+    const canvas = document.getElementById("gameCanvas");
+    canvas.style.display = "none";
+    
+    // Puanı kaydet (Okul sahnesiyle aynı sistem)
+    let totalScore = parseInt(localStorage.getItem('userScore')) || 0;
+    totalScore += finalScore;
+    localStorage.setItem('userScore', totalScore);
 
-  // PLAYER
-  ctx.fillStyle = "cyan";
-  ctx.fillRect(player.x, player.y, 20, 20);
-
-  // BULLETS
-  bullets.forEach(b => {
-    b.x += b.speed;
-    ctx.fillStyle = "yellow";
-    ctx.fillRect(b.x, b.y, 5, 5);
-  });
-
-  // TARGETS
-  targets.forEach(t => {
-    t.x -= t.speed;
-    ctx.fillStyle = "red";
-    ctx.fillRect(t.x, t.y, 20, 20);
-  });
-
-  // COLLISION
-  bullets.forEach((b, bi) => {
-    targets.forEach((t, ti) => {
-      if (
-        b.x < t.x + 20 &&
-        b.x + 5 > t.x &&
-        b.y < t.y + 20 &&
-        b.y + 5 > t.y
-      ) {
-        bullets.splice(bi,1);
-        targets.splice(ti,1);
-        score += 10;
-        document.getElementById("score").innerText = score;
-      }
-    });
-  });
+    document.getElementById("content").innerHTML = `
+        <div class="card" style="text-align:center">
+            <h1>Üretim Tamamlandı!</h1>
+            <p>Aracın test performansından <strong>${finalScore}</strong> puan kazandın.</p>
+            <h2>Toplam Puanın: ${totalScore}</h2>
+            <button class="btn-action" onclick="location.reload()">YENİ ÜRETİM</button>
+            <button class="btn-action" style="background:#3b82f6" onclick="window.location.href='../index.html'">HARİTAYA DÖN</button>
+        </div>
+    `;
 }
 
-// OYUN BİTİŞ
-function endGame() {
-  clearInterval(gameInterval);
-
-  document.getElementById("content").innerHTML = `
-    <h2>Oyun Bitti</h2>
-    <h3>Skor: ${score}</h3>
-    <button onclick="restart()">🔄 Yeniden Başla</button>
-  `;
-
-  canvas.style.display = "none";
-}
+// Başlat
+loadStep("category");
