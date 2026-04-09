@@ -1,91 +1,100 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Tekno Panel</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tekno Atölye V2.5</title>
+    
+    <style>
+        /* --- V2.5 ATÖLYE STİLLERİ --- */
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: white; overflow: hidden; user-select: none; }
+        
+        /* Haritaya Dön Butonu */
+        .back-btn-static {
+            position: absolute; top: 20px; left: 20px; z-index: 1000;
+            background: rgba(0,0,0,0.8); color: white; border: 2px solid #22c55e;
+            padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: bold;
+            pointer-events: auto; transition: 0.3s;
+        }
+        .back-btn-static:hover { background: #22c55e; color: #000; }
 
-<style>
-body {
-  margin:0;
-  font-family: Arial;
-  background:#0f172a;
-  color:white;
-}
+        /* Ana Panel (Workshop Tablet) */
+        #workshop-container {
+            width: 95vw; height: 90vh; margin: 5vh auto;
+            background: #1e293b; border: 8px solid #334155;
+            border-radius: 24px; display: flex; flex-direction: column;
+            box-shadow: 0 0 50px rgba(0,0,0,0.7); position: relative;
+        }
 
-#topbar {
-  background:#020617;
-  padding:10px;
-}
+        #topbar {
+            background: #020617; padding: 20px; border-radius: 16px 16px 0 0;
+            border-bottom: 2px solid #334155;
+        }
 
-.steps {
-  display:flex;
-  justify-content:space-around;
-}
+        .steps { display: flex; justify-content: space-around; gap: 10px; }
+        .step { 
+            flex: 1; text-align: center; padding: 10px; background: #334155; 
+            border-radius: 10px; font-size: 0.8em; font-weight: bold; opacity: 0.4; 
+        }
+        .step.active { opacity: 1; background: #22c55e; color: #020617; }
 
-.step {
-  opacity:0.5;
-}
+        #content { flex: 1; padding: 30px; overflow-y: auto; }
 
-.active {
-  opacity:1;
-  color:#22c55e;
-}
+        /* Kart ve Parça Tasarımları */
+        .card { background: #334155; padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 5px solid #22c55e; }
+        .parts { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        
+        .part {
+            background: #475569; padding: 15px; border-radius: 12px; cursor: pointer;
+            transition: 0.2s; border: 2px solid transparent; text-align: center;
+        }
+        .part:hover { border-color: #22c55e; transform: translateY(-3px); background: #64748b; }
 
-#content {
-  padding:20px;
-}
+        /* Performans Barları */
+        .bar-container { margin: 10px 0; }
+        .bar-label { display: flex; justify-content: space-between; font-size: 0.9em; margin-bottom: 5px; }
+        .bar { height: 12px; background: #0f172a; border-radius: 6px; overflow: hidden; }
+        .fill { height: 100%; background: #22c55e; transition: width 0.5s ease-out; }
 
-.card {
-  background:#1e293b;
-  padding:15px;
-  margin-top:15px;
-  border-radius:10px;
-}
+        /* Oyun Alanı */
+        #gameCanvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; border-radius: 16px; display: none; z-index: 50;
+        }
 
-.parts {
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
+        .btn-action {
+            background: #22c55e; color: #020617; border: none; padding: 15px 30px;
+            border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1.1em;
+            margin-top: 10px; transition: 0.3s;
+        }
+        .btn-action:hover { filter: brightness(1.2); }
 
-.part {
-  background:#334155;
-  padding:10px;
-  border-radius:8px;
-  cursor:pointer;
-  flex:1;
-  min-width:120px;
-  text-align:center;
-}
-
-.bar {
-  height:10px;
-  background:#334155;
-  border-radius:5px;
-}
-
-.fill {
-  height:10px;
-  background:#22c55e;
-}
-</style>
+        /* Okul Sahnesindeki TTS/Bildirim Sorunu İçin Fix */
+        .notification-overlay {
+            position: fixed; z-index: 9999 !important; top: 0; left: 0;
+            width: 100%; height: 100%; pointer-events: none;
+            display: flex; justify-content: center; align-items: center;
+        }
+    </style>
 </head>
-
 <body>
 
-<div id="topbar">
-  <div class="steps">
-    <div id="step-career" class="step">Kariyer</div>
-    <div id="step-vehicle" class="step">Araç</div>
-    <div id="step-build" class="step">Parçalar</div>
-    <div id="step-test" class="step">Test</div>
-  </div>
-</div>
+    <button class="back-btn-static" onclick="window.location.href='../index.html'">🔙 HARİTAYA DÖN</button>
 
-<div id="content"></div>
+    <div id="workshop-container">
+        <div id="topbar">
+            <div class="steps">
+                <div id="step-category" class="step">KATEGORİ</div>
+                <div id="step-vehicle" class="step">MODEL</div>
+                <div id="step-build" class="step">ÜRETİM</div>
+                <div id="step-test" class="step">TEST SÜRÜŞÜ</div>
+            </div>
+        </div>
 
-  <canvas id="gameCanvas" width="600" height="400" style="display:none; background:black;"></canvas>
+        <div id="content"></div>
+        <canvas id="gameCanvas" width="800" height="500"></canvas>
+    </div>
 
-<script src="main.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
