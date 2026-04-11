@@ -37,11 +37,31 @@ function goToScene(sceneId) {
 function toggleSettings() {
     const modal = document.getElementById('settings-modal');
     modal.classList.toggle('open');
+
+    // ==========================================
+    // *** YENİ EKLEME: PROFIL İNCELEME GÖREVİ ***
+    // ==========================================
+    if (modal.classList.contains('open') && window.questManager) {
+        // Eğer görev aktifse, başarıyla tamamla
+        window.questManager.completeQuest('home_check_profile');
+    }
+    // ==========================================
 }
 
-// OYUNU SIFIRLA / ÇIKIŞ YAP (Opsiyonel kullanım için)
+// OYUNU SIFIRLA / ÇIKIŞ YAP
 function logout() {
-    localStorage.clear(); // Tüm kayıtları sil
+    localStorage.clear(); // Senin yazdığın tüm kayıtları siler
+    
+    // ==========================================
+    // *** YENİ EKLEME: GÖREV HAFIZASINI SİL ***
+    // ==========================================
+    localStorage.removeItem('activeQuests');
+    localStorage.removeItem('completedQuests');
+    localStorage.removeItem('visitedLocations');
+    localStorage.removeItem('productionCategories');
+    localStorage.removeItem('userScore');
+    // ==========================================
+
     location.reload();    // Sayfayı baştan yükle
 }
 
@@ -119,9 +139,33 @@ function goToRoom(imageFile, roomName) {
     bgImage.src = imageFile;
     title.innerText = roomName;
 
+    // ==========================================
+    // *** YENİ EKLEME: GÖREV SİSTEMİ TETİKLEYİCİSİ ***
+    // ==========================================
+    if (window.questManager) {
+        // 1. Gidilen mekanı ziyaret edildi olarak kaydet
+        window.questManager.visitLocation(roomName);
+
+        // 2. İsimlere göre başlangıç görevlerini aktif et
+        // Not: roomName isimleri senin HTML'de gönderdiğin isimlerle eşleşmeli
+        const nameLower = roomName.toLowerCase();
+        
+        if (nameLower.includes("okul")) {
+            window.questManager.activateQuest('school_first_lesson');
+        } else if (nameLower.includes("atölye") || nameLower.includes("atolye")) {
+            window.questManager.activateQuest('workshop_first_vehicle');
+        } else if (nameLower.includes("cafe") || nameLower.includes("kafe")) {
+            window.questManager.activateQuest('cafe_first_order');
+        } else if (nameLower.includes("ofis")) {
+            window.questManager.activateQuest('office_first_presentation');
+        } else if (nameLower.includes("ev")) {
+            window.questManager.activateQuest('home_check_profile');
+        }
+    }
+    // ==========================================
+
     goToScene('scene-room-view');
 }
-
 // ODADAN ÇIKIŞ
 function goBackFromRoom() {
     goToScene(lastMenu);
